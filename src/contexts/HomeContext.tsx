@@ -2,6 +2,7 @@ import * as React from "react";
 
 export type HomeData = {
   scrollToProjects?: () => void;
+  scrollToContact?: () => void; 
 };
 
 const HomeContext = React.createContext<HomeData | undefined>(undefined);

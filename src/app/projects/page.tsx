@@ -27,7 +27,7 @@ export default async function ProjectsPage() {
 
       <Container>
         <FadeIn className="mb-12">
-            <Link href="/projects" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6">
+            <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6">
               <ArrowLeft size={20} /> Back to Home
             </Link>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">All Projects</h1>

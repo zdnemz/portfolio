@@ -7,16 +7,18 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Zidane | Creative Frontend Developer",
+  title: "Zidane | Web3 Developer & Smart Contract Engineer",
   description:
-    "frontend developer crafting immersive, high-performance web experiences with React, Next.js, and WebGL.",
+    "Web3 developer and smart contract engineer building secure, decentralized applications and blockchain protocols with a focus on correctness and trust minimization.",
   keywords: [
-    "Frontend Developer",
+    "Web3 Developer",
+    "Smart Contract Engineer",
     "Zidane",
-    "React",
-    "Next.js",
-    "Three.js",
-    "Creative Developer",
+    "Blockchain",
+    "Solidity",
+    "Ethereum",
+    "DeFi",
+    "dApp",
     "Portfolio",
   ],
   authors: [{ name: "ZidaneMZ", url: "https://zdnemz.vercel.app" }],
@@ -27,30 +29,31 @@ export const metadata = {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Zidane | Creative Frontend Developer",
+    title: "Zidane | Web3 Developer & Smart Contract Engineer",
     description:
-      "Explore the portfolio of Zidane, a developer focused on modern UI/UX, animations, and interactive web design.",
+      "Explore the portfolio of Zidane, a Web3 developer specializing in smart contracts, decentralized systems, and secure blockchain architecture.",
     url: "https://zdnemz.vercel.app",
-    siteName: "Zidane Portfolio",
+    siteName: "Zidane Web3 Portfolio",
     images: [
       {
         url: "https://zdnemz.vercel.app/api/og",
         width: 1200,
         height: 630,
-        alt: "Zidane Portfolio Preview",
+        alt: "Zidane Web3 Portfolio Preview",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zidane | Creative Frontend Developer",
+    title: "Zidane | Web3 Developer & Smart Contract Engineer",
     description:
-      "Crafting immersive web experiences with Next.js and Three.js.",
+      "Building secure, decentralized systems with Solidity and modern Web3 tooling.",
     images: ["https://zdnemz.vercel.app/api/og"],
     creator: "@zdnemz",
   },
 };
+
 
 export default function RootLayout({
   children,
