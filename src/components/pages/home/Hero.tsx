@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 
-import Link from "next/link";
 import { useHomeContext } from "@/contexts/HomeContext";
 import ThreeCanvas from "@/components/ui/3d-canvas";
 import HeroScene from "@/components/3d/HeroScene";
@@ -10,7 +9,7 @@ import { FadeIn, StaggerContainer } from "@/components/ui/motion-wrapper";
 
 
 export default function Hero() {
-  const { scrollToProjects } = useHomeContext();
+  const { scrollToProjects, scrollToContact } = useHomeContext();
 
   return (
     <section className="relative flex py-24 md:py-32 items-center justify-center min-h-screen px-6 overflow-hidden">
@@ -34,15 +33,16 @@ export default function Hero() {
         {/* Subtitle */}
         <FadeIn delay={0.4}>
           <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl leading-relaxed">
-            Frontend Developer & UI/UX Enthusiast. <br />
-            Crafting <span className="text-primary font-semibold">immersive</span> and <span className="text-accent font-semibold">interactive</span> digital experiences.
+            Web3 Developer & Smart Contract Engineer. <br />
+            Building <span className="text-primary font-semibold">secure</span> and
+            <span className="text-accent font-semibold"> decentralized</span> blockchain solutions.
           </p>
         </FadeIn>
 
         {/* CTA */}
         <FadeIn delay={0.6} className="mt-10 flex flex-col sm:flex-row gap-6">
-          <Button size="lg" className="rounded-full px-8 py-6 text-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow duration-300">
-            <Link href="/">Let’s Work Together</Link>
+          <Button size="lg" className="rounded-full px-8 py-6 text-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow duration-300 cursor-pointer" onClick={scrollToContact}>
+            Let’s Work Together
           </Button>
           <Button
             size="lg"

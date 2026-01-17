@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, SendHorizonal, MapPin, ArrowUpRight } from "lucide-react";
 import * as React from "react";
 
-export default function Contact() {
+const Contact = React.forwardRef<HTMLElement>((_, ref) => {
   const [data, setData] = React.useState({
     name: "",
     email: "",
@@ -43,7 +43,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative py-24 md:py-32 bg-background overflow-hidden relative">
+    <section id="contact" className="relative py-24 md:py-32 bg-background overflow-hidden relative" ref={ref}>
       {/* Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -83,7 +83,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Based in</p>
-                  <p className="font-medium text-foreground">Bandung, Indonesia (UTC+7)</p>
+                  <p className="font-medium text-foreground">Banjarmasin, Indonesia (UTC+8)</p>
                 </div>
               </div>
             </div>
@@ -160,4 +160,8 @@ export default function Contact() {
       </div>
     </section>
   );
-}
+})
+
+Contact.displayName = "Contact";
+export default Contact;
+

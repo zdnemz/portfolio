@@ -9,18 +9,22 @@ import { HomeProvider } from "@/contexts/HomeContext";
 
 export default function Home() {
   const projectsRef = React.useRef<HTMLElement>(null);
+  const contactRef = React.useRef<HTMLElement>(null);
 
   const scrollToProjects = () => {
     projectsRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+  const scrollToContact = () => {
+    contactRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
-    <HomeProvider value={{ scrollToProjects }}>
+    <HomeProvider value={{ scrollToProjects, scrollToContact }}>
       <main>
         <Hero />
         <Projects ref={projectsRef} />
         <About />
-        <Contact />
+        <Contact ref={contactRef} />
       </main>
     </HomeProvider>
   );

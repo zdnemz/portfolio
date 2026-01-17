@@ -51,7 +51,7 @@ export default function About() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6">
                   <p className="text-white/90 font-medium italic">
-                    &quot;Breathing life into pixels.&quot;
+                    &quot;Powering trust through code.&quot;
                   </p>
                 </div>
               </div>
@@ -60,11 +60,11 @@ export default function About() {
             {/* Floating Badges */}
             <div className="absolute -top-6 -left-6 glass px-4 py-2 rounded-full flex items-center gap-2 text-sm font-semibold shadow-lg animate-bounce duration-[3000ms]">
               <Code2 className="text-primary w-4 h-4" />
-              Frontend Wizard
+              Smart Contract Engineer
             </div>
             <div className="absolute bottom-10 -right-10 glass px-4 py-2 rounded-full flex items-center gap-2 text-sm font-semibold shadow-lg animate-bounce delay-700 duration-[3000ms]">
               <Palette className="text-accent w-4 h-4" />
-              UI/UX Enthusiast
+              Web3 Builder
             </div>
           </FadeIn>
 
@@ -76,17 +76,16 @@ export default function About() {
                 About Me
               </div>
               <h2 className="mt-4 text-4xl md:text-5xl font-bold leading-tight">
-                Design-driven <br />
+                Protocol-driven <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
-                  Frontend Developer.
+                  Web3 Developer.
                 </span>
               </h2>
             </FadeIn>
 
             <FadeIn delay={0.2}>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                I specialize in building beautiful, performant interfaces with a focus on experience, accessibility, and responsiveness.
-                I believe great digital products should feel <span className="text-foreground font-medium">intuitive</span> and <span className="text-foreground font-medium">empowering</span>.
+                I specialize in building secure, reliable smart contracts and decentralized applications with a strong focus on correctness, security, and long-term maintainability. I believe great blockchain systems should be <span className="text-foreground font-medium">trust-minimized</span> and <span className="text-foreground font-medium">permissionless</span>.
               </p>
             </FadeIn>
 
@@ -103,13 +102,13 @@ export default function About() {
                     target={skill.url ? "_blank" : undefined}
                   >
                     <Badge
-                       variant="secondary"
-                       className="text-sm py-1.5 px-3 rounded-md hover:bg-primary/20 hover:text-primary transition-colors cursor-default"
-                     >
-                       {skill.name}
-                     </Badge>
-                   </Link>
-                 )) : (
+                      variant="secondary"
+                      className="text-sm py-1.5 px-3 rounded-md hover:bg-primary/20 hover:text-primary transition-colors cursor-default"
+                    >
+                      {skill.name}
+                    </Badge>
+                  </Link>
+                )) : (
                   // Fallback skills if fetch fails or empty
                   ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Three.js", "Node.js", "Figma"].map(skill => (
                     <Badge key={skill} variant="secondary" className="text-sm py-1.5 px-3 rounded-md">

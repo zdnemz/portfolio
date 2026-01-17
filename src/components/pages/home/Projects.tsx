@@ -103,7 +103,7 @@ const Projects = forwardRef<HTMLElement>((_, ref) => {
 
         <FadeIn delay={0.4} className="mt-16">
           <Link href="/projects">
-            <button className="px-8 py-3 rounded-full border border-primary/20 bg-primary/5 text-primary font-medium hover:bg-primary/10 hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] transition-all duration-300">
+            <button className="px-8 py-3 rounded-full border border-primary/20 bg-primary/5 text-primary font-medium hover:bg-primary/10 hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] transition-all duration-300 cursor-pointer">
               View All Works
             </button>
           </Link>
