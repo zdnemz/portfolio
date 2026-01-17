@@ -7,16 +7,17 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Zidane | Frontend Developer",
+  title: "Zidane | Creative Frontend Developer",
   description:
-    "Hi, I'm Zidane – a frontend developer crafting modern, responsive, and interactive web experiences.",
+    "frontend developer crafting immersive, high-performance web experiences with React, Next.js, and WebGL.",
   keywords: [
     "Frontend Developer",
     "Zidane",
     "React",
     "Next.js",
+    "Three.js",
+    "Creative Developer",
     "Portfolio",
-    "Web Developer",
   ],
   authors: [{ name: "ZidaneMZ", url: "https://zdnemz.vercel.app" }],
   creator: "ZidaneMZ",
@@ -26,9 +27,9 @@ export const metadata = {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Zidane | Frontend Developer",
+    title: "Zidane | Creative Frontend Developer",
     description:
-      "Explore Zidane's developer portfolio showcasing projects, elegant UI, and modern frontend technologies.",
+      "Explore the portfolio of Zidane, a developer focused on modern UI/UX, animations, and interactive web design.",
     url: "https://zdnemz.vercel.app",
     siteName: "Zidane Portfolio",
     images: [
@@ -43,9 +44,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zidane | Frontend Developer",
+    title: "Zidane | Creative Frontend Developer",
     description:
-      "Explore my portfolio – built with Next.js, Tailwind, and love for clean UI.",
+      "Crafting immersive web experiences with Next.js and Three.js.",
     images: ["https://zdnemz.vercel.app/api/og"],
     creator: "@zdnemz",
   },
@@ -58,10 +59,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <body className={`${inter.className} min-h-screen flex flex-col`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          forcedTheme="dark"
+          disableTransitionOnChange
+        >
           <Navbar />
-          {children}
+          <main className="flex-1 flex flex-col">
+            {children}
+          </main>
           <Footer />
         </ThemeProvider>
       </body>

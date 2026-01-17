@@ -1,44 +1,77 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import ThemeToggle from "./theme-toggle";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
 
 const navItems = [
-  { label: "Home", href: "#" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact", href: "#contact" },
+  { name: "Work", href: "#projects" },
+  { name: "About", href: "#about" },
+  { name: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <motion.nav
-      initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="fixed top-0 left-0 w-full z-50 backdrop-blur bg-background/70 border-b border-border"
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: "circOut" }}
+      className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4"
     >
-      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <nav className="glass rounded-full px-6 py-3 flex items-center justify-between w-full max-w-4xl shadow-lg shadow-primary/5">
         {/* Logo */}
-        <a href="#" className="font-bold text-xl text-primary tracking-tight">
-          Zidane
-        </a>
+        <Link href="/" className="font-bold text-xl tracking-tighter hover:text-primary transition-colors duration-300">
+          Zidane<span className="text-primary">.</span>dev
+        </Link>
 
-        {/* Navigation Links */}
-        <div className="hidden md:flex space-x-6">
+        {/* Desktop Nav */}
+        <ul className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-            >
-              {item.label}
-            </a>
+            <li key={item.name}>
+              <Link
+                href={item.href}
+                className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {item.name}
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        {/* Theme Toggle */}
-        <ThemeToggle />
-      </div>
-    </motion.nav>
+        {/* Mobile Toggle */}
+        <div className="flex items-center gap-4 md:hidden">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 -mr-2 text-muted-foreground hover:text-foreground"
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.95 }}
+          className="absolute top-20 left-4 right-4 p-4 glass rounded-2xl md:hidden flex flex-col gap-4 shadow-2xl origin-top"
+        >
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              onClick={() => setIsOpen(false)}
+              className="text-lg font-medium p-2 hover:bg-white/5 rounded-lg transition-colors"
+            >
+              {item.name}
+            </Link>
+          ))}
+        </motion.div>
+      )}
+    </motion.header>
   );
 }

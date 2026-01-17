@@ -1,16 +1,15 @@
 "use client";
 
 import React, { useEffect, useState, forwardRef } from "react";
-import { motion } from "framer-motion";
+
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { Container } from "../../container";
 import type { Project } from "@/types/project";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FadeIn, StaggerContainer } from "@/components/ui/motion-wrapper";
 
 const Projects = forwardRef<HTMLElement>((_, ref) => {
+  // Use explicit type to avoid inference issues if needed
   const [projects, setProjects] = useState<Project[] | null>(null);
 
   useEffect(() => {
@@ -23,108 +22,94 @@ const Projects = forwardRef<HTMLElement>((_, ref) => {
   const skeletonArray = Array.from({ length: 3 });
 
   return (
-    <motion.section
+    <section
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
+      id="projects"
       className="relative flex flex-col py-24 md:py-32 items-center justify-center min-h-screen px-6 text-center"
     >
-      <Container>
-        <motion.h2
-          className="text-3xl md:text-4xl font-bold mb-12 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Selected Projects
-        </motion.h2>
+      <div className="container mx-auto">
+        <FadeIn>
+          <h2 className="text-3xl md:text-5xl font-bold mb-16 text-center text-glow">
+            Selected <span className="text-primary">Works</span>
+          </h2>
+        </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {(isLoading ? skeletonArray : projects!).map((project, idx) => {
             const isSkeleton = isLoading;
             const projectData = project as Project;
 
-            const linkHref = isSkeleton ? "/" : projectData?.projectUrl || "/";
+            const linkHref = isSkeleton ? "/" : `/projects/${projectData?.id}`;
 
             return (
-              <motion.div
-                key={isSkeleton ? idx : projectData.id}
-                whileHover={{ scale: 1.025 }}
-                className="block"
-              >
+              <FadeIn key={isSkeleton ? idx : projectData.id} className="h-full">
                 <Link
-                  target="_blank"
                   href={linkHref}
-                  passHref
-                  className="block h-full"
+                  className="block h-full group"
                 >
-                  <Card className="relative group overflow-hidden h-full bg-background/80 border border-border hover:border-primary/50 transition-all duration-300 rounded-xl shadow-md">
+                  <div className="relative h-full glass-card rounded-2xl overflow-hidden hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2">
                     {/* Image */}
-                    {isSkeleton ? (
-                      <Skeleton className="w-full h-48" />
-                    ) : projectData.image ? (
-                      <div className="relative w-full h-48 overflow-hidden">
+                    <div className="relative w-full h-56 overflow-hidden">
+                      {isSkeleton ? (
+                        <Skeleton className="w-full h-full" />
+                      ) : projectData.image ? (
                         <Image
                           src={projectData.image}
                           alt={projectData.name || "Project Image"}
                           fill
-                          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                        />
-                        {/* Overlay info */}
-                        <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
-                          <div className="text-white text-center space-y-2">
-                            <p className="font-semibold text-lg">
-                              {projectData.name}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {projectData.description.slice(0, 80)}...
-                            </p>
-                          </div>
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
+                        ) : (
+                        <div className="w-full h-full bg-muted flex items-center justify-center text-sm text-muted-foreground">
+                          No image
                         </div>
-                      </div>
-                    ) : (
-                      <div className="w-full h-48 bg-muted flex items-center justify-center text-sm text-muted-foreground">
-                        No image
-                      </div>
-                    )}
+                      )}
+
+                      {/* Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-transpose to-transparent opacity-60" />
+                    </div>
 
                     {/* Card Content */}
-                    <CardContent className="p-4 space-y-3">
+                    <div className="p-6 text-left space-y-4">
                       {isSkeleton ? (
-                        <>
+                        <div className="space-y-2">
                           <Skeleton className="h-6 w-3/4" />
-                          <Skeleton className="h-4 w-5/6" />
-                          <div className="flex gap-1">
-                            <Skeleton className="h-6 w-16 rounded-full" />
-                            <Skeleton className="h-6 w-20 rounded-full" />
-                          </div>
-                        </>
+                          <Skeleton className="h-4 w-full" />
+                        </div>
                       ) : (
                         <>
-                          <div className="flex flex-wrap gap-2">
-                            {projectData.technologies.map((tech, i) => (
-                              <Badge
-                                key={i}
-                                variant="outline"
-                                className="rounded-full text-xs px-3 py-1 bg-muted/40 backdrop-blur-sm border-border hover:border-primary/50"
-                              >
-                                {tech}
-                              </Badge>
-                            ))}
+                            <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
+                              {projectData.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground line-clamp-2">
+                              {projectData.description}
+                            </p>
+                            <div className="flex flex-wrap gap-2 pt-2">
+                              {projectData.technologies.map((tech, i) => (
+                                <span key={i} className="text-xs px-2 py-1 rounded-md bg-white/5 border border-white/10 text-muted-foreground">
+                                  {tech}
+                                </span>
+                              ))}
                           </div>
                         </>
                       )}
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </Link>
-              </motion.div>
+              </FadeIn>
             );
           })}
-        </div>
-      </Container>
-    </motion.section>
+        </StaggerContainer>
+
+        <FadeIn delay={0.4} className="mt-16">
+          <Link href="/projects">
+            <button className="px-8 py-3 rounded-full border border-primary/20 bg-primary/5 text-primary font-medium hover:bg-primary/10 hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] transition-all duration-300">
+              View All Works
+            </button>
+          </Link>
+        </FadeIn>
+      </div>
+    </section>
   );
 });
 

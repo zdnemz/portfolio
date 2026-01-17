@@ -1,77 +1,59 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+
 import Link from "next/link";
-import { Container } from "../../container";
 import { useHomeContext } from "@/contexts/HomeContext";
+import ThreeCanvas from "@/components/ui/3d-canvas";
+import HeroScene from "@/components/3d/HeroScene";
+import { FadeIn, StaggerContainer } from "@/components/ui/motion-wrapper";
+
 
 export default function Hero() {
   const { scrollToProjects } = useHomeContext();
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-      className="relative flex py-24 md:py-32 items-center justify-center min-h-screen px-6 overflow-hidden"
-    >
-      <Container className="flex flex-col items-center justify-center text-center">
-        {/* Gradient Background Blur */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background via-muted to-background opacity-30 blur-3xl" />
+    <section className="relative flex py-24 md:py-32 items-center justify-center min-h-screen px-6 overflow-hidden">
+      {/* 3D Background */}
+      <ThreeCanvas>
+        <HeroScene />
+      </ThreeCanvas>
+
+      {/* Content */}
+      <StaggerContainer className="relative z-10 flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
 
         {/* Heading */}
-        <motion.h1
-          initial={{ opacity: 0, y: -40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-foreground"
-        >
-          {"Hi, I'm Zidane"}
-        </motion.h1>
+        <FadeIn delay={0.2} className="mb-6">
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-tight text-glow">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/50">
+              Hi, I&apos;m Zidane
+            </span>
+          </h1>
+        </FadeIn>
 
         {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl"
-        >
-          Frontend Developer & UI/UX Enthusiast — I craft responsive,
-          interactive, and scalable interfaces with modern stack.
-        </motion.p>
+        <FadeIn delay={0.4}>
+          <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl leading-relaxed">
+            Frontend Developer & UI/UX Enthusiast. <br />
+            Crafting <span className="text-primary font-semibold">immersive</span> and <span className="text-accent font-semibold">interactive</span> digital experiences.
+          </p>
+        </FadeIn>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="mt-8 flex flex-col sm:flex-row gap-4"
-        >
-          <Button size="lg">
+        <FadeIn delay={0.6} className="mt-10 flex flex-col sm:flex-row gap-6">
+          <Button size="lg" className="rounded-full px-8 py-6 text-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow duration-300">
             <Link href="/">Let’s Work Together</Link>
           </Button>
           <Button
             size="lg"
-            className="cursor-pointer"
-            variant="outline"
+            className="rounded-full px-8 py-6 text-lg cursor-pointer backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10"
+            variant="ghost"
             onClick={scrollToProjects}
           >
             See My Work
           </Button>
-        </motion.div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="mt-20 text-muted-foreground"
-        >
-          <ChevronDown size={28} />
-        </motion.div>
-      </Container>
-    </motion.section>
+        </FadeIn>
+      </StaggerContainer>
+    </section>
   );
 }

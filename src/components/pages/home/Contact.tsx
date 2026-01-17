@@ -1,11 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Container } from "../../container";
+import { FadeIn } from "@/components/ui/motion-wrapper";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Mail, SendHorizonal } from "lucide-react";
+import { Mail, SendHorizonal, MapPin, ArrowUpRight } from "lucide-react";
 import * as React from "react";
 
 export default function Contact() {
@@ -44,100 +43,121 @@ export default function Contact() {
   };
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-      className="relative py-24 md:py-32 bg-background overflow-hidden"
-    >
-      <Container>
-        <div className="grid md:grid-cols-5 gap-16 items-start">
-          {/* Left Side: Text & CTA */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="md:col-span-2 space-y-6"
-          >
-            <div className="inline-flex items-center gap-2 text-primary font-semibold tracking-wide">
-              <Mail size={18} />
-              Get in Touch
+    <section id="contact" className="relative py-24 md:py-32 bg-background overflow-hidden relative">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="container mx-auto px-6 max-w-6xl relative z-10">
+        <div className="grid md:grid-cols-5 gap-16 item-start">
+
+          {/* Left Side: Info */}
+          <FadeIn direction="right" className="md:col-span-2 space-y-8">
+            <div>
+              <div className="inline-flex items-center gap-2 text-primary font-bold text-sm tracking-wider uppercase mb-4">
+                <Mail size={16} />
+                Contact
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+                Let’s build something <br />
+                <span className="text-glow text-white">extraordinary.</span>
+              </h2>
             </div>
 
-            <h2 className="text-4xl font-bold leading-tight">
-              Let’s work on something great.
-            </h2>
-            <p className="text-muted-foreground text-base leading-relaxed">
-              Have an idea or a collaboration in mind? Reach out and let’s build
-              something that matters.
-            </p>
+            Whether you have a project in mind, need a frontend expert, or just want to say hi — I&apos;m always open to new ideas and collaborations.
 
-            <div className="text-sm text-muted-foreground">
-              Or email me directly at{" "}
-              <a
-                href="mailto:zidanemz.freelance@gmail.com"
-                className="underline underline-offset-4 hover:text-foreground"
-              >
-                zidanemz.freelance@gmail.com
+            <div className="space-y-4 pt-4">
+              <a href="mailto:zidanemz.freelance@gmail.com" className="flex items-center gap-4 group p-4 rounded-2xl bg-muted/20 hover:bg-muted/40 transition-colors border border-border/50">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <Mail size={20} />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Email me at</p>
+                  <p className="font-medium text-foreground">zidanemz.freelance@gmail.com</p>
+                </div>
+                <ArrowUpRight className="ml-auto text-muted-foreground group-hover:text-primary transition-colors" size={20} />
               </a>
-            </div>
-          </motion.div>
 
-          {/* Right Side: Contact Form */}
-          <motion.form
-            onSubmit={onSubmit}
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="md:col-span-3 bg-muted/10 backdrop-blur-md border border-border rounded-2xl p-8 space-y-6 shadow-lg"
-          >
-            <div className="grid md:grid-cols-2 gap-4">
-              <Input
-                type="text"
-                placeholder="Your Name"
-                value={data.name}
-                onChange={(e) => setData({ ...data, name: e.target.value })}
-                required
-                className="rounded-xl bg-background/60 focus-visible:ring-1"
-              />
-              <Input
-                type="email"
-                placeholder="Your Email"
-                value={data.email}
-                onChange={(e) => setData({ ...data, email: e.target.value })}
-                required
-                className="rounded-xl bg-background/60 focus-visible:ring-1"
-              />
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/20 border border-border/50">
+                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                  <MapPin size={20} />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Based in</p>
+                  <p className="font-medium text-foreground">Bandung, Indonesia (UTC+7)</p>
+                </div>
+              </div>
             </div>
-            <Textarea
-              placeholder="Your Message"
-              rows={5}
-              value={data.message}
-              onChange={(e) => setData({ ...data, message: e.target.value })}
-              required
-              className="rounded-xl bg-background/60 focus-visible:ring-1 max-h-48"
-            />
-            <Button
-              type="submit"
-              size="lg"
-              className="w-full group inline-flex items-center justify-center gap-2 rounded-xl"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Sending..." : "Send Message"}
-              <SendHorizonal className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-            </Button>
-            {submitted && (
-              <p className="text-green-600 text-sm text-center">
-                Message sent successfully!
-              </p>
-            )}
-          </motion.form>
+          </FadeIn>
+
+          {/* Right Side: Form */}
+          <FadeIn direction="left" delay={0.2} className="md:col-span-3">
+            <div className="glass-card p-8 md:p-10 rounded-3xl relative overflow-hidden">
+              <form onSubmit={onSubmit} className="space-y-6 relative z-10">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label htmlFor="name" className="text-sm font-medium ml-1">Name</label>
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="John Doe"
+                      value={data.name}
+                      onChange={(e) => setData({ ...data, name: e.target.value })}
+                      required
+                      className="rounded-xl h-12 bg-white/5 border-white/10 focus:border-primary/50 focus:ring-primary/20"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="text-sm font-medium ml-1">Email</label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="john@example.com"
+                      value={data.email}
+                      onChange={(e) => setData({ ...data, email: e.target.value })}
+                      required
+                      className="rounded-xl h-12 bg-white/5 border-white/10 focus:border-primary/50 focus:ring-primary/20"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="message" className="text-sm font-medium ml-1">Message</label>
+                  <Textarea
+                    id="message"
+                    placeholder="Tell me about your project..."
+                    rows={6}
+                    value={data.message}
+                    onChange={(e) => setData({ ...data, message: e.target.value })}
+                    required
+                    className="rounded-xl bg-white/5 border-white/10 focus:border-primary/50 focus:ring-primary/20 resize-none"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full h-12 rounded-xl text-base font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    "Sending..."
+                  ) : (
+                    <>
+                      Send Message <SendHorizonal className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+
+                {submitted && (
+                  <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-500 text-center text-sm font-medium animate-in fade-in slide-in-from-bottom-2">
+                    Message sent successfully! I&apos;ll get back to you soon.
+                  </div>
+                )}
+              </form>
+            </div>
+          </FadeIn>
         </div>
-      </Container>
-
-      {/* Background Accent Blur Circle */}
-      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-    </motion.section>
+      </div>
+    </section>
   );
 }
