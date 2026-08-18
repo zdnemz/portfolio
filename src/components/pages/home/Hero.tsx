@@ -18,7 +18,7 @@ export default function Hero() {
       <Container>
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
           {/* Type block, deliberately wider than the asset */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-8">
             <motion.p
               initial={reduce ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -29,9 +29,9 @@ export default function Hero() {
             </motion.p>
 
             <h1 className="display text-foreground">
-              <MaskLine delay={0.08}>Fullstack engineer</MaskLine>
+              <MaskLine delay={0.08}>Fullstack</MaskLine>
               <MaskLine delay={0.18} className="text-primary">
-                who ships to production.
+                engineer.
               </MaskLine>
             </h1>
 
@@ -41,8 +41,8 @@ export default function Hero() {
               transition={{ duration: 0.7, delay: 0.5, ease: EASE }}
               className="mt-8 max-w-[46ch] text-lg leading-relaxed text-muted-foreground"
             >
-              Next.js on the front, Hono and PostgreSQL behind it. Tests and CI
-              on every push.
+              I ship production web apps end to end. Next.js on the front, Hono
+              and PostgreSQL behind it.
             </motion.p>
 
             <motion.div
@@ -70,7 +70,7 @@ export default function Hero() {
             initial={reduce ? false : { opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.3, ease: EASE }}
-            className="lg:col-span-5 lg:mt-24"
+            className="lg:col-span-4 lg:mt-24"
           >
             <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-lg border border-border lg:ml-auto lg:max-w-none">
               <Image

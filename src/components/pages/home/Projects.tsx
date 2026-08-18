@@ -36,9 +36,15 @@ const Projects = forwardRef<HTMLElement>((_, ref) => {
   useEffect(() => {
     let active = true;
     fetch("/api/projects?limit=3&featured=true")
-      .then((res) => res.json())
-      .then((data) => {
-        if (active) setProjects(data.data ?? []);
+      .then(async (res) => {
+        // fetch resolves on 4xx/5xx, so status and the success flag are both
+        // checked here. Otherwise a failed request renders as "no projects".
+        const json = await res.json().catch(() => null);
+        if (!res.ok || !json?.success) throw new Error("request failed");
+        return Array.isArray(json.data) ? (json.data as Project[]) : [];
+      })
+      .then((list) => {
+        if (active) setProjects(list);
       })
       .catch(() => {
         if (active) setFailed(true);

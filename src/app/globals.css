@@ -63,8 +63,9 @@
 
   --radius: 0.625rem;
 
-  /* fluid type scale */
-  --text-display: clamp(2.75rem, 1.6rem + 5.4vw, 7rem);
+  /* fluid type scale. Sized against the hero's longest headline word so each
+     line holds on one row (2-line headline) at every breakpoint. */
+  --text-display: clamp(3rem, 1.5rem + 5.5vw, 6.5rem);
   --text-section: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
 
   /* section rhythm */
