@@ -1,13 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-space-grotesk);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -21,50 +19,58 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+
+  --radius-sm: calc(var(--radius) - 3px);
+  --radius-md: calc(var(--radius) - 1px);
   --radius-lg: var(--radius);
 }
 
+/*
+  Cool Graphite + Electric Blue.
+  Single accent, flat (no glow, no gradient). Dark-locked page theme.
+  Shape system: one radius scale, 10px. Applied to every interactive + surface.
+*/
 :root {
-  /* Deep Space / Nebula Theme - Dark Default */
-  --background: oklch(0.12 0.04 260); /* Deep Midnight Blue */
-  --foreground: oklch(0.95 0.02 260); /* Frost White */
-  
-  --card: oklch(0.16 0.04 260);
-  --card-foreground: oklch(0.95 0.02 260);
-  
-  --popover: oklch(0.14 0.04 260);
-  --popover-foreground: oklch(0.95 0.02 260);
-  
-  --primary: oklch(0.65 0.22 300); /* Electric Violet */
-  --primary-foreground: oklch(0.98 0 0);
-  
-  --secondary: oklch(0.35 0.15 240); /* Deep Indigo */
-  --secondary-foreground: oklch(0.95 0.02 260);
-  
-  --muted: oklch(0.20 0.03 260);
-  --muted-foreground: oklch(0.70 0.05 260);
-  
-  --accent: oklch(0.55 0.20 180); /* Cyan/Teal Glow */
-  --accent-foreground: oklch(0.98 0 0);
-  
-  --destructive: oklch(0.6 0.2 20);
-  --destructive-foreground: oklch(0.98 0 0);
-  
-  --border: oklch(0.30 0.05 260);
-  --input: oklch(0.30 0.05 260);
-  --ring: oklch(0.65 0.22 300);
-  
-  --radius: 0.75rem;
-}
+  --background: oklch(0.145 0.005 265);
+  --foreground: oklch(0.96 0.003 265);
 
-/* Consider a light mode that is heavily inverted or just sticking to dark for 'anti-mainstream' */
-.dark {
-  /* Reinforce the same values or slight variations */
-  --background: oklch(0.10 0.04 260); 
-  --foreground: oklch(0.98 0.01 260);
+  --card: oklch(0.181 0.006 265);
+  --card-foreground: oklch(0.96 0.003 265);
+
+  --popover: oklch(0.181 0.006 265);
+  --popover-foreground: oklch(0.96 0.003 265);
+
+  /* the one accent. L=0.72 keeps it readable as text on the dark base (~7.5:1) */
+  --primary: oklch(0.72 0.155 252);
+  --primary-foreground: oklch(0.16 0.04 258);
+
+  --secondary: oklch(0.24 0.008 265);
+  --secondary-foreground: oklch(0.96 0.003 265);
+
+  --muted: oklch(0.205 0.007 265);
+  --muted-foreground: oklch(0.65 0.012 265);
+
+  /* neutral hover surface, deliberately not a second brand colour */
+  --accent: oklch(0.24 0.008 265);
+  --accent-foreground: oklch(0.96 0.003 265);
+
+  --destructive: oklch(0.58 0.19 25);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --border: oklch(1 0 0 / 11%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.72 0.155 252);
+
+  --radius: 0.625rem;
+
+  /* fluid type scale */
+  --text-display: clamp(2.75rem, 1.6rem + 5.4vw, 7rem);
+  --text-section: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
+
+  /* section rhythm */
+  --space-section: clamp(5rem, 3.5rem + 6vw, 10rem);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
@@ -77,33 +83,71 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-white;
+    @apply bg-background text-foreground antialiased;
+    @apply selection:bg-primary/25 selection:text-foreground;
   }
-  
+
+  h1, h2, h3 {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /* grain sits on a fixed, non-scrolling layer so it never repaints on scroll */
   body::before {
     content: "";
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     pointer-events: none;
-    z-index: 50;
-    opacity: 0.03;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    z-index: 60;
+    opacity: 0.022;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  .surface {
+    @apply bg-card border border-border rounded-lg;
   }
-  
-  .glass-card {
-    @apply bg-card/60 backdrop-blur-md border border-white/5 shadow-xl;
+
+  /* hairline rule used to separate sections instead of card chrome */
+  .rule-top {
+    @apply border-t border-border;
   }
-  
-  .text-glow {
-    text-shadow: 0 0 20px var(--primary);
+
+  .display {
+    font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-size: var(--text-display);
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+  }
+
+  .heading-section {
+    font-size: var(--text-section);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+  }
+
+  .section-pad {
+    padding-block: var(--space-section);
+  }
+}
+
+@keyframes loadingSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

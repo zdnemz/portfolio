@@ -1,59 +1,90 @@
 "use client";
 
+import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-
+import { Container } from "@/components/container";
 import { useHomeContext } from "@/contexts/HomeContext";
-import ThreeCanvas from "@/components/ui/3d-canvas";
-import HeroScene from "@/components/3d/HeroScene";
-import { FadeIn, StaggerContainer } from "@/components/ui/motion-wrapper";
+import { MaskLine } from "@/components/ui/motion-wrapper";
 
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function Hero() {
   const { scrollToProjects, scrollToContact } = useHomeContext();
+  const reduce = useReducedMotion();
 
   return (
-    <section className="relative flex py-24 md:py-32 items-center justify-center min-h-screen px-6 overflow-hidden">
-      {/* 3D Background */}
-      <ThreeCanvas>
-        <HeroScene />
-      </ThreeCanvas>
+    <section className="relative flex min-h-[100dvh] items-center pt-24 pb-16">
+      <Container>
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
+          {/* Type block, deliberately wider than the asset */}
+          <div className="lg:col-span-7">
+            <motion.p
+              initial={reduce ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="mb-6 text-sm text-muted-foreground"
+            >
+              Maulana Zidane
+            </motion.p>
 
-      {/* Content */}
-      <StaggerContainer className="relative z-10 flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
+            <h1 className="display text-foreground">
+              <MaskLine delay={0.08}>Fullstack engineer</MaskLine>
+              <MaskLine delay={0.18} className="text-primary">
+                who ships to production.
+              </MaskLine>
+            </h1>
 
-        {/* Heading */}
-        <FadeIn delay={0.2} className="mb-6">
-          <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-tight text-glow">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/50">
-              Hi, I&apos;m Zidane
-            </span>
-          </h1>
-        </FadeIn>
+            <motion.p
+              initial={reduce ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.5, ease: EASE }}
+              className="mt-8 max-w-[46ch] text-lg leading-relaxed text-muted-foreground"
+            >
+              Next.js on the front, Hono and PostgreSQL behind it. Tests and CI
+              on every push.
+            </motion.p>
 
-        {/* Subtitle */}
-        <FadeIn delay={0.4}>
-          <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl leading-relaxed">
-            Web3 Developer & Smart Contract Engineer. <br />
-            Building <span className="text-primary font-semibold">secure</span> and
-            <span className="text-accent font-semibold"> decentralized</span> blockchain solutions.
-          </p>
-        </FadeIn>
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.62, ease: EASE }}
+              className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4"
+            >
+              <Button size="lg" onClick={scrollToProjects} className="cursor-pointer">
+                View work
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={scrollToContact}
+                className="cursor-pointer"
+              >
+                Get in touch
+              </Button>
+            </motion.div>
+          </div>
 
-        {/* CTA */}
-        <FadeIn delay={0.6} className="mt-10 flex flex-col sm:flex-row gap-6">
-          <Button size="lg" className="rounded-full px-8 py-6 text-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow duration-300 cursor-pointer" onClick={scrollToContact}>
-            Let’s Work Together
-          </Button>
-          <Button
-            size="lg"
-            className="rounded-full px-8 py-6 text-lg cursor-pointer backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10"
-            variant="ghost"
-            onClick={scrollToProjects}
+          {/* Asset column, offset down to break the centre line */}
+          <motion.div
+            initial={reduce ? false : { opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.3, ease: EASE }}
+            className="lg:col-span-5 lg:mt-24"
           >
-            See My Work
-          </Button>
-        </FadeIn>
-      </StaggerContainer>
+            <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-lg border border-border lg:ml-auto lg:max-w-none">
+              <Image
+                src="/images/me.jpg"
+                alt="Maulana Zidane"
+                fill
+                priority
+                sizes="(max-width: 1024px) 90vw, 40vw"
+                className="object-cover"
+              />
+            </div>
+          </motion.div>
+        </div>
+      </Container>
     </section>
   );
 }
