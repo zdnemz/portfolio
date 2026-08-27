@@ -8,6 +8,12 @@
  *   Stagger   -> storytelling (list items arrive in reading order, not all at once)
  * All of them collapse to static under prefers-reduced-motion.
  * No scroll listeners: whileInView uses IntersectionObserver internally.
+ *
+ * viewport.amount is a fraction of the ELEMENT, not the viewport, so a
+ * fractional amount silently never fires once the element grows taller than
+ * `viewport / amount` — which is how a 12-card single-column grid on a phone
+ * ends up stuck at opacity 0. Use amount "some" plus a px margin instead:
+ * that fires a fixed distance into the element regardless of how tall it is.
  */
 
 import * as React from "react";
@@ -40,7 +46,7 @@ export function Reveal({
     <motion.div
       initial={reduce ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.25 }}
+      viewport={{ once: true, amount: "some", margin: "0px 0px -80px 0px" }}
       transition={{ duration: 0.7, delay, ease: EASE }}
       className={className}
       {...props}
@@ -66,7 +72,7 @@ export function Stagger({
     <motion.div
       initial={reduce ? false : "hidden"}
       whileInView="show"
-      viewport={{ once: true, amount: 0.15 }}
+      viewport={{ once: true, amount: "some", margin: "0px 0px -48px 0px" }}
       variants={{
         hidden: {},
         show: { transition: { staggerChildren: staggerDelay } },

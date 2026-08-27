@@ -75,15 +75,19 @@ export const getUrl = (
   return field?.type === "url" ? field.url : null;
 };
 
-export const getImageUrl = (
-  field:
-    | {
-        type: "files";
-        files: Array<{ file: { url: string } } | { external: { url: string } }>;
-      }
-    | undefined
-): string | null => {
-  const file = field?.files?.[0];
-  if (!file) return null;
-  return "file" in file ? file.file.url : file.external.url;
+/**
+ * Every file URL on a Notion "files" property, in the order Notion stores
+ * them. Notion-hosted files come back as signed S3 URLs that expire after
+ * roughly an hour, so pages rendering these must stay dynamic.
+ */
+export const getFileUrls = (
+  props: PageObjectResponse["properties"],
+  key: string
+): string[] => {
+  const field = props[key];
+  if (field?.type !== "files") return [];
+
+  return field.files
+    .map((file) => ("file" in file ? file.file.url : file.external?.url))
+    .filter((url): url is string => Boolean(url));
 };

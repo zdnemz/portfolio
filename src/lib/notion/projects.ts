@@ -7,7 +7,7 @@ import {
 import {
   getCheckbox,
   getDate,
-  getImageUrl,
+  getFileUrls,
   getMultiSelect,
   getRichText,
   getSelect,
@@ -52,11 +52,7 @@ export async function getProjects({
         featured: getCheckbox(props, "Featured"),
         projectUrl: getUrl(props, "Project URL"),
         repositoryUrl: getUrl(props, "Repository URL"),
-        image: getImageUrl(
-          props["Mockup Image"].type === "files"
-            ? props["Mockup Image"]
-            : undefined
-        ),
+        images: getFileUrls(props, "Mockup Image"),
       };
     });
 }
@@ -93,11 +89,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
       featured: getCheckbox(props, "Featured"),
       projectUrl: getUrl(props, "Project URL"),
       repositoryUrl: getUrl(props, "Repository URL"),
-      image: getImageUrl(
-        props["Mockup Image"].type === "files"
-          ? props["Mockup Image"]
-          : undefined
-      ),
+      images: getFileUrls(props, "Mockup Image"),
     };
 
   } catch (error) {

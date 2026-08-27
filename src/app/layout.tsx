@@ -1,7 +1,13 @@
 import "./globals.css";
-import { Space_Grotesk, DM_Sans } from "next/font/google";
+import { Space_Grotesk, DM_Sans, Space_Mono } from "next/font/google";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import ScrollProgress from "@/components/scroll-progress";
+import ReadingProgressRail from "@/components/reading-progress-rail";
+import SkipLink from "@/components/skip-link";
+import { ThemeProvider } from "@/components/theme-provider";
+import CommandPalette from "@/components/command-palette";
+import KeyboardShortcuts from "@/components/keyboard-shortcuts";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -14,6 +20,13 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-dm-sans",
+  display: "swap",
+});
+
+const spaceMono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
   display: "swap",
 });
 
@@ -35,9 +48,7 @@ export const metadata = {
   creator: "Maulana Zidane",
   metadataBase: new URL("https://zdnemz.vercel.app"),
   robots: "index, follow",
-  icons: {
-    icon: "/favicon.ico",
-  },
+  icons: { icon: "/favicon.ico" },
   openGraph: {
     title: "Maulana Zidane | Fullstack Engineer",
     description:
@@ -70,13 +81,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${spaceGrotesk.variable} ${dmSans.variable} font-sans min-h-[100dvh] flex flex-col`}
+        className={`${spaceGrotesk.variable} ${dmSans.variable} ${spaceMono.variable} font-sans min-h-[100dvh] flex flex-col`}
       >
-        <Navbar />
-        <main className="flex-1 flex flex-col">{children}</main>
-        <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <SkipLink />
+          <ScrollProgress />
+          <ReadingProgressRail />
+          <CommandPalette />
+          <KeyboardShortcuts />
+          <Navbar />
+          <main id="main-content" className="flex-1 flex flex-col">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

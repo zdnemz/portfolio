@@ -1,11 +1,31 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Enable Tailwind v4 `dark:` variants driven by the .dark class (next-themes). */
+@custom-variant dark (&:is(.dark *));
+
+/*
+  NEO-BRUTALISM DESIGN SYSTEM — "Engineered Paper"
+  -------------------------------------------------
+  Warm cream paper canvas. Hard near-black ink borders. Single coral accent.
+  Hard offset shadows (no blur). Sharp corners. Mono technical labels.
+  Mobile-first. Physical, tactile interactions.
+
+  ANTI-SLOP GUARDRAILS (per SKILL.md):
+  - ONE accent (coral). No purple/blue AI glow. No rainbow.
+  - No pure #000 — ink is warm near-black oklch(0.16 0.01 60).
+  - No neon oversaturation — coral chroma capped at 0.19.
+  - No generic Inter font. Space Grotesk (display) + DM Sans (body) + Space Mono (labels).
+  - No centered hero. Left-aligned, asymmetric.
+  - No 3-equal-card feature rows.
+*/
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-dm-sans);
   --font-display: var(--font-space-grotesk);
+  --font-mono: var(--font-space-mono);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -16,62 +36,110 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
 
-  --radius-sm: calc(var(--radius) - 3px);
-  --radius-md: calc(var(--radius) - 1px);
-  --radius-lg: var(--radius);
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+}
+
+:root {
+  /* Surfaces */
+  --background: oklch(0.955 0.012 85);       /* warm cream paper */
+  --foreground: oklch(0.16 0.01 60);         /* warm near-black ink */
+  --card: oklch(0.992 0.004 85);             /* near-white surface */
+  --card-foreground: oklch(0.16 0.01 60);
+  --popover: oklch(0.992 0.004 85);
+  --popover-foreground: oklch(0.16 0.01 60);
+
+  /* The single accent — warm coral-red. Chroma 0.19 (under 0.20 cap, never neon). */
+  --primary: oklch(0.642 0.19 32);
+  --primary-foreground: oklch(0.16 0.01 60); /* ink on coral */
+
+  /* Ink as secondary surface (black buttons/tags) */
+  --secondary: oklch(0.16 0.01 60);
+  --secondary-foreground: oklch(0.955 0.012 85);
+
+  --muted: oklch(0.905 0.013 85);            /* darker cream for muted blocks */
+  --muted-foreground: oklch(0.42 0.014 60);  /* warm gray body text */
+
+  /* Neutral hover surface — deliberately NOT a second brand colour */
+  --accent: oklch(0.905 0.013 85);
+  --accent-foreground: oklch(0.16 0.01 60);
+
+  --destructive: oklch(0.55 0.21 27);
+  --destructive-foreground: oklch(0.98 0.01 60);
+
+  --border: oklch(0.16 0.01 60);             /* hard ink borders — the signature */
+  --input: oklch(0.992 0.004 85);
+  --ring: oklch(0.642 0.19 32);              /* coral focus ring */
+
+  --radius: 0px;
+
+  /* Fluid type scale — sized so headlines hold their rhythm at every breakpoint */
+  --text-display: clamp(2.75rem, 1.4rem + 6.2vw, 6.25rem);
+  --text-section: clamp(1.875rem, 1.35rem + 2.5vw, 3.25rem);
+
+  /* Section rhythm */
+  --space-section: clamp(4.5rem, 3.2rem + 5vw, 9rem);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Brutalist hard offset shadows — zero blur, pure translation */
+  --shadow-brutal: 4px 4px 0 0 var(--border);
+  --shadow-brutal-sm: 2px 2px 0 0 var(--border);
+  --shadow-brutal-lg: 6px 6px 0 0 var(--border);
+  --shadow-brutal-coral: 4px 4px 0 0 var(--primary);
 }
 
 /*
-  Cool Graphite + Electric Blue.
-  Single accent, flat (no glow, no gradient). Dark-locked page theme.
-  Shape system: one radius scale, 10px. Applied to every interactive + surface.
+  DARK VARIANT — "Engineered Ink"
+  -------------------------------
+  Inverts the canvas to warm near-black while keeping the single coral accent
+  and the hard ink borders (now rendered in cream so they still read on dark).
+  The brutalist shadow language is preserved — offset, zero-blur — just tinted
+  to the dark surface hue. Triggered by .dark on <html> via next-themes.
 */
-:root {
-  --background: oklch(0.145 0.005 265);
-  --foreground: oklch(0.96 0.003 265);
+.dark {
+  --background: oklch(0.185 0.014 60);            /* warm near-black, lifted slightly for depth */
+  --foreground: oklch(0.95 0.008 85);             /* warm cream ink */
+  --card: oklch(0.225 0.016 60);                  /* slightly lifted surface */
+  --card-foreground: oklch(0.95 0.008 85);
+  --popover: oklch(0.225 0.016 60);
+  --popover-foreground: oklch(0.95 0.008 85);
 
-  --card: oklch(0.181 0.006 265);
-  --card-foreground: oklch(0.96 0.003 265);
+  /* Coral accent preserved — slightly lifted chroma for dark-bg legibility */
+  --primary: oklch(0.68 0.19 32);
+  --primary-foreground: oklch(0.185 0.014 60);
 
-  --popover: oklch(0.181 0.006 265);
-  --popover-foreground: oklch(0.96 0.003 265);
+  --secondary: oklch(0.95 0.008 85);
+  --secondary-foreground: oklch(0.185 0.014 60);
 
-  /* the one accent. L=0.72 keeps it readable as text on the dark base (~7.5:1) */
-  --primary: oklch(0.72 0.155 252);
-  --primary-foreground: oklch(0.16 0.04 258);
+  --muted: oklch(0.275 0.016 60);
+  --muted-foreground: oklch(0.78 0.012 85);       /* lifted for WCAG AA contrast on dark */
 
-  --secondary: oklch(0.24 0.008 265);
-  --secondary-foreground: oklch(0.96 0.003 265);
+  --accent: oklch(0.275 0.016 60);
+  --accent-foreground: oklch(0.95 0.008 85);
 
-  --muted: oklch(0.205 0.007 265);
-  --muted-foreground: oklch(0.65 0.012 265);
+  --destructive: oklch(0.62 0.21 27);
+  --destructive-foreground: oklch(0.98 0.01 60);
 
-  /* neutral hover surface, deliberately not a second brand colour */
-  --accent: oklch(0.24 0.008 265);
-  --accent-foreground: oklch(0.96 0.003 265);
+  --border: oklch(0.95 0.008 85);                 /* cream borders on dark */
+  --input: oklch(0.225 0.016 60);
+  --ring: oklch(0.68 0.19 32);
 
-  --destructive: oklch(0.58 0.19 25);
-  --destructive-foreground: oklch(0.98 0 0);
-
-  --border: oklch(1 0 0 / 11%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.72 0.155 252);
-
-  --radius: 0.625rem;
-
-  /* fluid type scale. Sized against the hero's longest headline word so each
-     line holds on one row (2-line headline) at every breakpoint. */
-  --text-display: clamp(3rem, 1.5rem + 5.5vw, 6.5rem);
-  --text-section: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
-
-  /* section rhythm */
-  --space-section: clamp(5rem, 3.5rem + 6vw, 10rem);
-
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Shadows now use the cream border color so they read on the dark canvas */
+  --shadow-brutal: 4px 4px 0 0 var(--border);
+  --shadow-brutal-sm: 2px 2px 0 0 var(--border);
+  --shadow-brutal-lg: 6px 6px 0 0 var(--border);
+  --shadow-brutal-coral: 4px 4px 0 0 var(--primary);
 }
 
 @layer base {
@@ -85,58 +153,143 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    @apply selection:bg-primary/25 selection:text-foreground;
+    @apply selection:bg-primary selection:text-primary-foreground;
+    font-feature-settings: "ss01", "cv01";
   }
 
-  h1, h2, h3 {
+  h1, h2, h3, h4 {
     font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
   }
 
-  /* grain sits on a fixed, non-scrolling layer so it never repaints on scroll */
+  /* Paper grain — fixed, non-scrolling, never repaints on scroll.
+     Multiply on light paper, screen on dark ink (so it still reads). */
   body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 60;
-    opacity: 0.022;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+  .dark body::before {
+    mix-blend-mode: screen;
+    opacity: 0.04;
+  }
+
+  /* Hard, visible focus for keyboard users */
+  :focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
   }
 }
 
 @layer utilities {
+  /* The brutalist surface: white card on cream, hard ink border, offset shadow */
   .surface {
-    @apply bg-card border border-border rounded-lg;
+    @apply bg-card border-2 border-border;
+    box-shadow: var(--shadow-brutal);
   }
 
-  /* hairline rule used to separate sections instead of card chrome */
+  .surface-flat {
+    @apply bg-card border-2 border-border;
+  }
+
+  /* Hard rule between sections instead of soft hairlines */
   .rule-top {
-    @apply border-t border-border;
+    @apply border-t-2 border-border;
   }
 
   .display {
-    font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
     font-size: var(--text-display);
-    line-height: 0.94;
-    letter-spacing: -0.035em;
-    font-weight: 500;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    font-weight: 700;
   }
 
   .heading-section {
     font-size: var(--text-section);
-    line-height: 1.04;
-    letter-spacing: -0.025em;
-    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    font-weight: 700;
   }
 
   .section-pad {
     padding-block: var(--space-section);
+  }
+
+  /* Mono label — eyebrow / metadata / tags. Uppercase, tracked. */
+  .label-mono {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Hard offset shadow utilities */
+  .shadow-brutal {
+    box-shadow: var(--shadow-brutal);
+  }
+  .shadow-brutal-sm {
+    box-shadow: var(--shadow-brutal-sm);
+  }
+  .shadow-brutal-lg {
+    box-shadow: var(--shadow-brutal-lg);
+  }
+  .shadow-brutal-coral {
+    box-shadow: var(--shadow-brutal-coral);
+  }
+
+  /* Tactile press — used on buttons/cards. Translates toward shadow on hover, kills it on active. */
+  .press {
+    transition: transform 0.12s var(--ease-out-expo), box-shadow 0.12s var(--ease-out-expo);
+  }
+  .press:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-brutal-lg);
+  }
+  .press:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 0 var(--border);
+  }
+
+  /* Coral highlight box — for emphasised headline words */
+  .hl-coral {
+    @apply bg-primary text-primary-foreground;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding-inline: 0.12em;
+  }
+
+  /* Diagonal stripe pattern — for accents / empty states */
+  .stripes {
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--border) 0,
+      var(--border) 1.5px,
+      transparent 1.5px,
+      transparent 7px
+    );
   }
 }
 
 @keyframes loadingSlide {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(300%); }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -150,5 +303,121 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+/*
+  PRINT STYLESHEET — resume / CV export.
+  --------------------------------------
+  Produces a clean, ink-on-paper layout when the user prints (Cmd/Ctrl+P).
+  Hides nav, footer, decorative sections, and interactive chrome; keeps
+  the content sections (Hero, Stats, Projects, Process, About, Writing,
+  Testimonials, Contact) in a single-column, black-on-white flow.
+  Triggered by the "Download CV" button which calls window.print().
+*/
+@media print {
+  /* Force light theme regardless of the .dark toggle */
+  :root {
+    --background: oklch(1 0 0) !important;
+    --foreground: oklch(0.16 0.01 60) !important;
+    --card: oklch(1 0 0) !important;
+    --muted: oklch(0.97 0 0) !important;
+    --muted-foreground: oklch(0.35 0 0) !important;
+    --border: oklch(0.16 0.01 60) !important;
+    --primary: oklch(0.55 0.19 32) !important;
+  }
+
+  /* Kill the grain overlay, scroll-progress, and any fixed chrome */
+  body::before,
+  .scroll-progress,
+  header,
+  footer,
+  [aria-label="Skip to content"],
+  [aria-label="Toggle color theme"],
+  [aria-label="Open command palette"],
+  [aria-label="Open command palette (Cmd+K)"],
+  #now {
+    display: none !important;
+  }
+
+  /* Remove all hard shadows and borders-on-hovers; print is flat */
+  * {
+    box-shadow: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Flatten surfaces: cards lose their shadow, keep a 1px border */
+  .surface,
+  [class*="shadow-brutal"] {
+    box-shadow: none !important;
+    border: 1px solid var(--border) !important;
+  }
+
+  /* Section rhythm — tighter for print, avoid page-break mid-section */
+  .section-pad {
+    padding-block: 1.5rem !important;
+    break-inside: avoid;
+  }
+  .rule-top {
+    border-top: 2px solid var(--border) !important;
+    break-before: auto;
+  }
+
+  /* Headings: smaller for print, black ink */
+  .display {
+    font-size: 2.5rem !important;
+    color: var(--foreground) !important;
+  }
+  .heading-section {
+    font-size: 1.5rem !important;
+    color: var(--foreground) !important;
+  }
+  .hl-coral {
+    background: transparent !important;
+    color: var(--primary) !important;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  /* Links: show the URL for external links (writing posts, project URLs) */
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-family: var(--font-mono), monospace;
+    font-size: 0.7rem;
+    color: var(--muted-foreground);
+  }
+
+  /* Page margins */
+  @page {
+    margin: 1.5cm;
+  }
+
+  /* Avoid orphan headings */
+  h1, h2, h3 {
+    break-after: avoid;
+  }
+
+  /* Force the main content to be the only printed flow */
+  main {
+    display: block !important;
+  }
+
+  /* Hide decorative elements: marquee, stat count-up containers, timeline spines */
+  .animate-marquee,
+  [class*="ping"],
+  [aria-hidden="true"] {
+    display: none !important;
+  }
+
+  /* Background must be white, text black */
+  body {
+    background: white !important;
+    color: black !important;
   }
 }

@@ -12,5 +12,6 @@ export type Project = {
   featured: boolean;
   projectUrl: string | null;
   repositoryUrl: string | null;
-  image: string | null;
+  /** Every file on the Notion "Mockup Image" property, in Notion's order. */
+  images: string[];
 };

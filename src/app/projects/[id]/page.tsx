@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { getProjectById } from "@/lib/notion/projects";
 import { Container } from "@/components/container";
+import ProjectGallery from "@/components/projects/project-gallery";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import { Reveal } from "@/components/ui/motion-wrapper";
@@ -102,22 +102,7 @@ export default async function ProjectPage({ params }: PageProps) {
         </Reveal>
 
         <Reveal delay={0.1} className="mt-16">
-          <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border bg-muted">
-            {project.image ? (
-              <Image
-                src={project.image}
-                alt={project.name}
-                fill
-                sizes="(max-width: 1024px) 92vw, 64rem"
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-muted-foreground">
-                No preview available
-              </div>
-            )}
-          </div>
+          <ProjectGallery media={project.images} title={project.name} />
         </Reveal>
 
         <Reveal delay={0.14}>
