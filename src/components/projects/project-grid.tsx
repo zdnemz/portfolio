@@ -87,21 +87,12 @@ export default function ProjectGrid({ projects }: { projects: Project[] }) {
         <Stagger
           key={active ?? "all"}
           staggerDelay={0.06}
-          className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-6"
+          className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {filtered.map((project, idx) => {
-            const isWide = idx % 5 === 0;
-            return (
-              <StaggerItem
-                key={project.id}
-                className={isWide ? "lg:col-span-4" : "lg:col-span-2"}
-              >
+          {filtered.map((project, idx) => (
+              <StaggerItem key={project.id}>
                 <Link href={`/projects/${project.id}`} className="group block">
-                  <div
-                    className={`relative w-full overflow-hidden border-2 border-border bg-muted shadow-brutal transition-all duration-200 group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] group-hover:shadow-brutal-coral ${
-                      isWide ? "aspect-[16/9]" : "aspect-[4/3]"
-                    }`}
-                  >
+                  <div className="relative aspect-[16/9] w-full overflow-hidden border-2 border-border bg-muted shadow-brutal transition-all duration-200 group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] group-hover:shadow-brutal-coral">
                     <div className="absolute left-0 top-0 z-10 border-b-2 border-r-2 border-border bg-foreground px-2.5 py-1">
                       <span className="label-mono text-primary">
                         {String(idx + 1).padStart(2, "0")}
@@ -112,7 +103,8 @@ export default function ProjectGrid({ projects }: { projects: Project[] }) {
                         src={project.images[0]}
                         alt={project.name}
                         fill
-                        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 40vw"
+                        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
+                        priority={idx < 3}
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                       />
                     ) : (
@@ -159,8 +151,7 @@ export default function ProjectGrid({ projects }: { projects: Project[] }) {
                   </div>
                 </Link>
               </StaggerItem>
-            );
-          })}
+          ))}
         </Stagger>
       )}
     </div>
