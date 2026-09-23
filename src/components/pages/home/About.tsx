@@ -3,24 +3,24 @@
 import { Container } from "@/components/container";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/motion-wrapper";
 
-// Synced with the "About Me" and "Stack" sections of github.com/zdnemz/zdnemz
+// Mirrors the resume TECHNICAL SKILLS block.
 const STACK: [string, string[]][] = [
-  ["Languages", ["TypeScript", "JavaScript", "PHP", "Python", "Rust", "Solidity"]],
-  ["Frontend", ["Next.js", "React", "Tailwind CSS"]],
-  ["Backend & Data", ["Node.js", "Hono", "Drizzle ORM", "PostgreSQL", "Redis", "Zod"]],
-  ["DevOps & Tooling", ["Docker", "Linux", "Vercel", "Git", "GitHub Actions"]],
-  ["Development", ["pnpm", "Bun", "Prettier", "Playwright", "Claude Code"]],
-  ["Web3", ["Ethereum", "Hardhat", "OpenZeppelin", "Wagmi", "Viem"]],
+  ["Languages", ["TypeScript", "JavaScript", "PHP", "Solidity", "Rust", "Python", "SQL"]],
+  ["Frontend", ["React", "Next.js", "Tailwind CSS", "shadcn/ui", "Framer Motion"]],
+  ["Backend & Data", ["Hono", "Node.js", "REST APIs", "Drizzle ORM", "PostgreSQL", "Neon", "Redis", "Zod", "NextAuth", "Better Auth"]],
+  ["Web3", ["Solidity", "Hardhat", "OpenZeppelin", "Wagmi", "Viem"]],
+  ["CMS & Infra", ["Payload CMS", "Sanity CMS", "Docker", "Cloudflare", "Vercel"]],
+  ["Testing & Tooling", ["Playwright", "GitHub Actions CI", "Git", "Bun", "pnpm", "monorepo workflows"]],
 ];
 
 // Asymmetric bento spans on desktop — avoids the banned uniform card wall.
 const STACK_SPAN: Record<string, string> = {
   Languages: "lg:col-span-3",
   Frontend: "lg:col-span-3",
-  "Backend & Data": "lg:col-span-2",
-  "DevOps & Tooling": "lg:col-span-2",
-  Development: "lg:col-span-2",
-  Web3: "lg:col-span-6",
+  "Backend & Data": "lg:col-span-4",
+  Web3: "lg:col-span-2",
+  "CMS & Infra": "lg:col-span-3",
+  "Testing & Tooling": "lg:col-span-3",
 };
 
 export default function About() {
@@ -37,11 +37,13 @@ export default function About() {
 
           <Reveal delay={0.1} className="lg:col-span-7 lg:pt-2">
             <p className="text-lg leading-relaxed text-muted-foreground md:text-xl">
-              3 years building production web applications. Next.js App Router on
-              the front, Hono APIs and Drizzle/PostgreSQL on the back, Redis where
-              it earns its place. I write tests and CI for the things that matter,
-              and I&apos;m used to owning a system from schema to deploy without
-              hand-holding.
+              Fullstack developer with three years of mostly self-directed
+              freelance experience, building production web systems and
+              security-focused applications. I work primarily with Next.js,
+              Hono, PostgreSQL, and TypeScript, with additional experience in
+              cryptography and blockchain development using Solidity. I enjoy
+              working on systems where correctness, security, and trust
+              boundaries matter.
             </p>
           </Reveal>
         </div>
@@ -50,7 +52,7 @@ export default function About() {
         <Reveal delay={0.12} className="mt-16 border-t-2 border-border pt-6">
           <div className="flex items-center justify-between">
             <span className="label-mono text-muted-foreground">/ Stack reference</span>
-            <span className="label-mono text-muted-foreground">6 categories · 28 tools</span>
+            <span className="label-mono text-muted-foreground">6 categories · 38 tools</span>
           </div>
         </Reveal>
 

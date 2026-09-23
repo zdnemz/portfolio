@@ -31,11 +31,11 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata = {
-  title: "Maulana Zidane | Fullstack Engineer",
+  title: "Maulana Zidane | Fullstack Developer",
   description:
-    "Fullstack engineer specializing in TypeScript, Next.js, and Hono. Shipping production web apps from schema to deploy, with tests and CI on every push.",
+    "Fullstack developer specializing in Next.js, Hono, PostgreSQL, and TypeScript, with Solidity for on-chain systems. Building production web systems where correctness and security matter.",
   keywords: [
-    "Fullstack Engineer",
+    "Fullstack Developer",
     "Next.js Developer",
     "TypeScript",
     "Hono",
@@ -50,9 +50,9 @@ export const metadata = {
   robots: "index, follow",
   icons: { icon: "/favicon.ico" },
   openGraph: {
-    title: "Maulana Zidane | Fullstack Engineer",
+    title: "Maulana Zidane | Fullstack Developer",
     description:
-      "Fullstack engineer building production web apps with Next.js, Hono, and PostgreSQL.",
+      "Fullstack developer building production web systems with Next.js, Hono, PostgreSQL, and Solidity.",
     url: "https://zdnemz.vercel.app",
     siteName: "Maulana Zidane",
     images: [
@@ -60,16 +60,16 @@ export const metadata = {
         url: "https://zdnemz.vercel.app/api/og",
         width: 1200,
         height: 630,
-        alt: "Maulana Zidane, Fullstack Engineer",
+        alt: "Maulana Zidane, Fullstack Developer",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Maulana Zidane | Fullstack Engineer",
+    title: "Maulana Zidane | Fullstack Developer",
     description:
-      "Fullstack engineer building production web apps with Next.js, Hono, and PostgreSQL.",
+      "Fullstack developer building production web systems with Next.js, Hono, PostgreSQL, and Solidity.",
     images: ["https://zdnemz.vercel.app/api/og"],
     creator: "@zdnemz",
   },

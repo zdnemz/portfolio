@@ -40,7 +40,7 @@ export default function Hero() {
             <span className="label-mono text-foreground">Maulana Zidane</span>
           </span>
           <span className="label-mono text-muted-foreground">
-            Banjarmasin, ID · UTC+8
+            Banjarmasin, South Kalimantan, ID · UTC+8
           </span>
         </motion.div>
 
@@ -48,7 +48,7 @@ export default function Hero() {
         <h1 className="display text-foreground">
           <MaskLine delay={0.08}>Fullstack</MaskLine>
           <MaskLine delay={0.18}>
-            <span className="hl-coral">engineer.</span>
+            <span className="hl-coral">developer.</span>
           </MaskLine>
         </h1>
 
@@ -58,8 +58,9 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.5, ease: EASE }}
           className="mt-8 max-w-[46ch] text-lg leading-relaxed text-muted-foreground md:text-xl"
         >
-          I ship production web apps end to end. Next.js on the front, Hono
-          and PostgreSQL behind it.
+          I build production web systems where correctness and security
+          matter. Next.js and Hono on the front, PostgreSQL behind it,
+          Solidity on-chain where trust needs proving.
         </motion.p>
 
         <motion.div

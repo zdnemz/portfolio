@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 export function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const title = searchParams.get("title") || "Maulana Zidane | Fullstack Engineer";
+  const title = searchParams.get("title") || "Maulana Zidane | Fullstack Developer";
 
   return new ImageResponse(
     (
@@ -24,7 +24,7 @@ export function GET(req: NextRequest) {
         }}
       >
         <div style={{ color: "#7aa2f7", fontSize: 26, marginBottom: 24, fontWeight: 400 }}>
-          Fullstack Engineer
+          Fullstack Developer
         </div>
         <div>{title}</div>
       </div>

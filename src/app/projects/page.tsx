@@ -2,7 +2,7 @@ import { getProjects } from "@/lib/notion/projects";
 import { Container } from "@/components/container";
 import ProjectGrid from "@/components/projects/project-grid";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Printer } from "lucide-react";
 import { Reveal } from "@/components/ui/motion-wrapper";
 import { Metadata } from "next";
 
@@ -36,6 +36,15 @@ export default async function ProjectsPage() {
             Systems I have built and shipped, from client work to personal
             projects.
           </p>
+          <div className="mt-6 print:hidden">
+            <Link
+              href="/projects/print"
+              className="group inline-flex items-center gap-2 border-2 border-border bg-card px-4 py-2 shadow-brutal-sm transition-all duration-150 hover:-translate-x-[1px] hover:-translate-y-[1px] hover:bg-foreground hover:text-background hover:shadow-brutal active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            >
+              <Printer size={15} strokeWidth={2.5} />
+              <span className="label-mono">Export portfolio PDF</span>
+            </Link>
+          </div>
         </Reveal>
 
         {projects.length === 0 ? (
