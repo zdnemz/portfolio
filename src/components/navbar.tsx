@@ -6,22 +6,8 @@ import { useState } from "react";
 import { Menu, X, Search } from "lucide-react";
 import { Container } from "@/components/container";
 import { useActiveSection } from "@/hooks/use-active-section";
-
-const navItems = [
-  { name: "Work", href: "#projects" },
-  { name: "About", href: "#about" },
-  { name: "Contact", href: "#contact" },
-];
-
-/** Section ids the navbar should track for the active-section highlight. */
-const TRACKED_SECTIONS = [
-  "projects",
-  "process",
-  "about",
-  "writing",
-  "testimonials",
-  "contact",
-];
+import { SECTION_IDS } from "@/lib/section-ids";
+import type { SiteContent } from "@/lib/cms/types";
 
 /** Dispatch a synthetic Cmd/Ctrl+K to open the global CommandPalette. */
 function openPalette() {
@@ -35,9 +21,13 @@ function openPalette() {
   );
 }
 
-export default function Navbar() {
+export default function Navbar({ site }: { site?: SiteContent }) {
   const [isOpen, setIsOpen] = useState(false);
-  const activeSection = useActiveSection(TRACKED_SECTIONS);
+  const activeSection = useActiveSection(SECTION_IDS);
+
+  // Optional only for the pre-S1 layout, which mounts chrome before site data
+  // exists. S1 always passes `site`; render nothing until it does.
+  if (!site) return null;
 
   return (
     <header className="fixed top-0 inset-x-0 z-40 border-b-2 border-border bg-background/95 backdrop-blur-sm">
@@ -48,25 +38,24 @@ export default function Navbar() {
           className="group flex items-center gap-2.5 font-display text-[0.95rem] font-bold tracking-tight transition-transform duration-150 active:translate-y-[1px]"
         >
           <span className="grid size-7 place-items-center border-2 border-border bg-foreground text-primary shadow-brutal-sm transition-transform duration-150 group-hover:-translate-y-[1px] group-hover:shadow-brutal">
-            <span className="text-sm font-bold leading-none">Z</span>
+            <span className="text-sm font-bold leading-none">
+              {site.identity.initials}
+            </span>
           </span>
           <span className="hidden sm:inline">
-            zdnemz<span className="text-primary">.</span>dev
+            {site.identity.wordmark}
+            <span className="text-primary">{site.identity.wordmarkAccent}</span>
           </span>
         </Link>
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {navItems.map((item) => {
-            // Map the nav link to the tracked section it represents.
-            const sectionId = item.href.replace("#", "");
-            const isActive =
-              activeSection === sectionId ||
-              (sectionId === "about" && activeSection === "writing") ||
-              (sectionId === "about" && activeSection === "testimonials");
+          {site.nav.items.map((item) => {
+            const sectionId = item.href.replace(/^#/, "");
+            const isActive = activeSection === sectionId;
             return (
               <Link
-                key={item.name}
+                key={item.href}
                 href={item.href}
                 aria-current={isActive ? "true" : undefined}
                 className={`label-mono border-2 px-3 py-1.5 transition-all duration-150 ${
@@ -75,7 +64,7 @@ export default function Navbar() {
                     : "border-transparent text-muted-foreground hover:border-border hover:bg-foreground hover:text-background"
                 }`}
               >
-                {item.name}
+                {item.label}
               </Link>
             );
           })}
@@ -91,12 +80,14 @@ export default function Navbar() {
               ⌘K
             </kbd>
           </button>
-          <span className="ml-2 inline-flex items-center gap-2 border-2 border-border bg-primary px-3 py-1.5 shadow-brutal-sm">
-            <span className="size-2 bg-foreground" aria-hidden />
-            <span className="label-mono text-primary-foreground">
-              Open to work
+          {site.identity.available && (
+            <span className="ml-2 inline-flex items-center gap-2 border-2 border-border bg-primary px-3 py-1.5 shadow-brutal-sm">
+              <span className="size-2 bg-foreground" aria-hidden />
+              <span className="label-mono text-primary-foreground">
+                {site.identity.availabilityLabel}
+              </span>
             </span>
-          </span>
+          )}
         </nav>
 
         {/* Mobile: search + hamburger */}
@@ -134,25 +125,27 @@ export default function Navbar() {
             className="overflow-hidden border-b-2 border-border bg-background md:hidden"
           >
             <Container className="flex flex-col py-4">
-              {navItems.map((item) => (
+              {site.nav.items.map((item, index) => (
                 <Link
-                  key={item.name}
+                  key={item.href}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className="flex items-center justify-between border-2 border-transparent py-3 font-display text-2xl font-bold tracking-tight transition-all duration-150 hover:border-border hover:bg-foreground hover:px-3 hover:text-background"
                 >
-                  {item.name}
+                  {item.label}
                   <span className="label-mono text-muted-foreground">
-                    0{navItems.indexOf(item) + 1}
+                    0{index + 1}
                   </span>
                 </Link>
               ))}
-              <div className="mt-3 inline-flex items-center gap-2 self-start border-2 border-border bg-primary px-3 py-1.5 shadow-brutal-sm">
-                <span className="size-2 bg-foreground" aria-hidden />
-                <span className="label-mono text-primary-foreground">
-                  Open to work
-                </span>
-              </div>
+              {site.identity.available && (
+                <div className="mt-3 inline-flex items-center gap-2 self-start border-2 border-border bg-primary px-3 py-1.5 shadow-brutal-sm">
+                  <span className="size-2 bg-foreground" aria-hidden />
+                  <span className="label-mono text-primary-foreground">
+                    {site.identity.availabilityLabel}
+                  </span>
+                </div>
+              )}
             </Container>
           </motion.div>
         )}

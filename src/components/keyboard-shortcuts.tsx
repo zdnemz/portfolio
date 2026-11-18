@@ -2,11 +2,14 @@
 
 import * as React from "react";
 import { Keyboard, X } from "lucide-react";
+import type { SiteContent } from "@/lib/cms/types";
 
 /**
  * KeyboardShortcuts — a help modal triggered by the `?` key (and a button in
  * the footer). Shows all available keyboard shortcuts. Brutalist-styled.
  * Complements the CommandPalette (Cmd+K). Esc to close, click backdrop to close.
+ *
+ * Shortcut descriptions are UI chrome, not marketing copy, so they stay here.
  */
 const SHORTCUTS = [
   { keys: ["⌘", "K"], description: "Open command palette", group: "Navigation" },
@@ -18,16 +21,24 @@ const SHORTCUTS = [
   { keys: ["⇧", "Tab"], description: "Move focus to previous element", group: "Accessibility" },
 ] as const;
 
-export default function KeyboardShortcuts() {
-  const [open, setOpen] = React.useState(false);
+const HEADING_ID = "keyboard-shortcuts-heading";
 
-  // Global `?` key listener.
+export default function KeyboardShortcuts({ site }: { site?: SiteContent }) {
+  const [open, setOpen] = React.useState(false);
+  const panelRef = React.useRef<HTMLDivElement>(null);
+  const previousFocus = React.useRef<HTMLElement | null>(null);
+
+  // Listen for a synthetic `?` from the footer trigger as well as real keys.
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "?" && !e.metaKey && !e.ctrlKey && !e.altKey) {
         // Don't trigger when typing in an input/textarea.
-        const target = e.target as HTMLElement;
-        if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+        const target = e.target as HTMLElement | null;
+        if (
+          target?.tagName === "INPUT" ||
+          target?.tagName === "TEXTAREA" ||
+          target?.isContentEditable
+        ) {
           return;
         }
         e.preventDefault();
@@ -40,7 +51,41 @@ export default function KeyboardShortcuts() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  if (!open) return null;
+  // Focus the close button on open; restore the previously focused element on
+  // close. The close button is the first control inside the panel, so this also
+  // satisfies the trap's "first" check.
+  React.useEffect(() => {
+    if (!open) return;
+    previousFocus.current = document.activeElement as HTMLElement | null;
+    panelRef.current?.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+    return () => previousFocus.current?.focus();
+  }, [open]);
+
+  // Escape closes; Tab cycles inside the panel.
+  const onPanelKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      e.stopPropagation();
+      setOpen(false);
+      return;
+    }
+    if (e.key !== "Tab" || !panelRef.current) return;
+
+    const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
+  if (!open || !site) return null;
 
   // Group shortcuts by group
   const groups = SHORTCUTS.reduce((acc, s) => {
@@ -55,7 +100,7 @@ export default function KeyboardShortcuts() {
       className="fixed inset-0 z-[70] flex items-start justify-center px-4 pt-[18vh]"
       role="dialog"
       aria-modal="true"
-      aria-label="Keyboard shortcuts"
+      aria-labelledby={HEADING_ID}
     >
       {/* Backdrop */}
       <button
@@ -66,16 +111,23 @@ export default function KeyboardShortcuts() {
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-lg border-2 border-border bg-card shadow-brutal-lg">
+      <div
+        ref={panelRef}
+        onKeyDown={onPanelKeyDown}
+        className="relative w-full max-w-lg border-2 border-border bg-card shadow-brutal-lg"
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b-2 border-border bg-foreground px-5 py-3">
           <div className="flex items-center gap-2">
             <Keyboard size={16} strokeWidth={2.5} className="text-primary" />
-            <span className="label-mono text-background">/ Keyboard shortcuts</span>
+            <h2 id={HEADING_ID} className="label-mono text-background">
+              / Keyboard shortcuts
+            </h2>
           </div>
           <button
             onClick={() => setOpen(false)}
             aria-label="Close"
+            data-autofocus
             className="grid size-7 place-items-center border-2 border-background bg-background text-foreground transition-all duration-150 hover:bg-primary hover:text-primary-foreground active:translate-y-[1px]"
           >
             <X size={14} strokeWidth={2.5} />
@@ -114,7 +166,9 @@ export default function KeyboardShortcuts() {
         {/* Footer */}
         <div className="border-t-2 border-border px-5 py-3">
           <p className="label-mono text-muted-foreground">
-            Press <kbd className="border-2 border-border bg-background px-1 py-0.5 font-mono text-[0.6rem]">?</kbd> anytime to open this help
+            Press{" "}
+            <kbd className="border-2 border-border bg-background px-1 py-0.5 font-mono text-[0.6rem]">?</kbd>{" "}
+            anytime to open this help for {site.identity.name}
           </p>
         </div>
       </div>

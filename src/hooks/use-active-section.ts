@@ -11,7 +11,7 @@ import * as React from "react";
  * the user scrolls past it, not when it's centered). SSR-safe (returns null
  * on the server, resolves on mount).
  */
-export function useActiveSection(sectionIds: string[]): string | null {
+export function useActiveSection(sectionIds: readonly string[]): string | null {
   const [active, setActive] = React.useState<string | null>(null);
 
   React.useEffect(() => {
