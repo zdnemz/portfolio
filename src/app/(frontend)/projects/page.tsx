@@ -51,15 +51,20 @@ export default async function ProjectsPage() {
           </div>
         </Reveal>
 
-        {projects.length === 0 ? (
-          <div className="border-2 border-dashed border-border bg-muted p-10 text-center">
-            <p className="label-mono text-muted-foreground">
-              {copy.emptyMessage}
-            </p>
-          </div>
-        ) : (
-          <ProjectGrid projects={projects} />
-        )}
+        <section aria-label={copy.archiveHeading}>
+          {projects.length === 0 ? (
+            <div className="border-2 border-dashed border-border bg-muted p-10 text-center">
+              <p className="label-mono text-muted-foreground">
+                {copy.emptyMessage}
+              </p>
+            </div>
+          ) : (
+            <ProjectGrid
+              projects={projects}
+              emptyMessage={site.projectsSection.emptyMessage}
+            />
+          )}
+        </section>
       </Container>
     </main>
   );
