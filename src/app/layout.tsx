@@ -5,7 +5,6 @@ import Footer from "@/components/footer";
 import ScrollProgress from "@/components/scroll-progress";
 import ReadingProgressRail from "@/components/reading-progress-rail";
 import SkipLink from "@/components/skip-link";
-import { ThemeProvider } from "@/components/theme-provider";
 import CommandPalette from "@/components/command-palette";
 import KeyboardShortcuts from "@/components/keyboard-shortcuts";
 
@@ -85,21 +84,14 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${dmSans.variable} ${spaceMono.variable} font-sans min-h-[100dvh] flex flex-col`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
-          <SkipLink />
-          <ScrollProgress />
-          <ReadingProgressRail />
-          <CommandPalette />
-          <KeyboardShortcuts />
-          <Navbar />
-          <main id="main-content" className="flex-1 flex flex-col">{children}</main>
-          <Footer />
-        </ThemeProvider>
+        <SkipLink />
+        <ScrollProgress />
+        <ReadingProgressRail />
+        <CommandPalette />
+        <KeyboardShortcuts />
+        <Navbar />
+        <main id="main-content" className="flex-1 flex flex-col">{children}</main>
+        <Footer />
       </body>
     </html>
   );

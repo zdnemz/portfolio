@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Menu, X, Search } from "lucide-react";
 import { Container } from "@/components/container";
-import ThemeToggle from "@/components/theme-toggle";
 import { useActiveSection } from "@/hooks/use-active-section";
 
 const navItems = [
@@ -98,12 +97,9 @@ export default function Navbar() {
               Open to work
             </span>
           </span>
-          <span className="ml-2">
-            <ThemeToggle />
-          </span>
         </nav>
 
-        {/* Mobile: search + theme toggle + hamburger */}
+        {/* Mobile: search + hamburger */}
         <div className="flex items-center gap-2 md:hidden">
           <button
             onClick={openPalette}
@@ -112,7 +108,6 @@ export default function Navbar() {
           >
             <Search size={18} strokeWidth={2.5} />
           </button>
-          <ThemeToggle />
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="grid size-10 place-items-center border-2 border-border bg-foreground text-background shadow-brutal-sm transition-all duration-150 hover:-translate-y-[1px] hover:shadow-brutal active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
