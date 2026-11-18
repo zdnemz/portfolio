@@ -13,7 +13,9 @@ import { Site } from "./src/globals/Site";
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET || "insecure-dev-secret",
+  // Build-time fallback only. Production must always set PAYLOAD_SECRET.
+  secret:
+    process.env.PAYLOAD_SECRET || "insecure-build-time-secret-set-PAYLOAD_SECRET",
   admin: {
     user: "users",
     importMap: {
