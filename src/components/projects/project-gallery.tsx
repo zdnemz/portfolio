@@ -3,24 +3,31 @@
 import * as React from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { ProjectMedia } from "@/lib/cms/types";
 import VideoPlayer from "./video-player";
 
 const VIDEO_EXT = /\.(mp4|webm|mov|m4v)(\?|$)/i;
 
 /**
- * Media carousel for a project's Notion files.
+ * Media carousel for a project's CMS media.
  *
  * Scrolling is the native thing: a scroll-snap track that already works with
  * a finger, a trackpad, and the arrow keys. The buttons and dots drive that
  * same scroll rather than a parallel index state, so a swipe and a click can
  * never disagree about which slide is current.
+ *
+ * `unoptimized` is deliberate: media may live on an external CDN host that the
+ * image loader is not configured for.
  */
 export default function ProjectGallery({
   media,
   title,
+  emptyLabel,
 }: {
-  media: string[];
+  media: ProjectMedia[];
   title: string;
+  /** `site.projectPage.galleryEmpty` */
+  emptyLabel: string;
 }) {
   const trackRef = React.useRef<HTMLDivElement>(null);
   const [index, setIndex] = React.useState(0);
@@ -44,8 +51,8 @@ export default function ProjectGallery({
   if (media.length === 0) {
     return (
       <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border bg-muted">
-        <div className="flex h-full items-center justify-center text-muted-foreground">
-          No preview available
+        <div className="flex h-full items-center justify-center px-6 text-center text-muted-foreground">
+          {emptyLabel}
         </div>
       </div>
     );
@@ -66,29 +73,34 @@ export default function ProjectGallery({
         tabIndex={single ? -1 : 0}
         className="flex snap-x snap-mandatory overflow-x-auto rounded-lg border border-border bg-muted [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {media.map((src, i) => (
+        {media.map((item, i) => (
           <div
-            key={`${i}-${src}`}
+            key={`${i}-${item.url}`}
             className="relative aspect-video w-full shrink-0 snap-center"
             aria-label={`${i + 1} of ${media.length}`}
           >
-            {VIDEO_EXT.test(src) ? (
+            {VIDEO_EXT.test(item.url) ? (
               <VideoPlayer
-                src={src}
+                src={item.url}
                 active={i === index}
                 label={
-                  single
+                  item.alt ||
+                  (single
                     ? title
-                    : `${title} — media ${i + 1} of ${media.length}`
+                    : `${title} — media ${i + 1} of ${media.length}`)
                 }
               />
             ) : (
               <Image
-                src={src}
+                src={item.url}
                 alt={
-                  single ? title : `${title} — media ${i + 1} of ${media.length}`
+                  item.alt ||
+                  (single
+                    ? title
+                    : `${title} — media ${i + 1} of ${media.length}`)
                 }
                 fill
+                unoptimized
                 sizes="(max-width: 1024px) 92vw, 64rem"
                 className="object-cover"
                 priority={i === 0}
@@ -123,9 +135,9 @@ export default function ProjectGallery({
           </button>
 
           <div className="mt-4 flex items-center justify-center gap-2">
-            {media.map((src, i) => (
+            {media.map((item, i) => (
               <button
-                key={`${i}-${src}`}
+                key={`${i}-${item.url}`}
                 type="button"
                 onClick={() => goTo(i)}
                 aria-label={`Go to media ${i + 1}`}
