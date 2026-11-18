@@ -44,7 +44,13 @@ Configure these in `.env.local`:
 | `DATABASE_URI` | Yes | Postgres connection string. Local value is in `.env.example`: `postgresql://postgres:postgres@localhost:5432/portfolio`. |
 | `PAYLOAD_SECRET` | Yes | Payload encryption secret. Generate with `openssl rand -base64 32`. The value in `.env.example` is dev-only. |
 | `NEXT_PUBLIC_SERVER_URL` | No | Public site URL used for absolute links/metadata. Defaults to `https://zdnemz.vercel.app`. |
-| `BLOB_READ_WRITE_TOKEN` | No | Enables Vercel Blob uploads. Without it Payload uses local disk, and project media should use external URLs. |
+| `S3_BUCKET` | No | S3-compatible bucket for media uploads. Setting it activates the S3 adapter; with no S3 vars set, uploads stay on local disk. |
+| `S3_REGION` | No | Bucket region (e.g. `us-east-1` for AWS S3, `auto` for R2). Required when S3 is enabled. |
+| `S3_ACCESS_KEY_ID` | No | Access key ID with read/write access to the bucket. Required when S3 is enabled. |
+| `S3_SECRET_ACCESS_KEY` | No | Secret access key for the access key ID. Required when S3 is enabled. |
+| `S3_ENDPOINT` | No | Custom S3-compatible endpoint URL (R2, MinIO). Omit for AWS S3. |
+| `S3_FORCE_PATH_STYLE` | No | Set to `true` for path-style URLs (needed by MinIO). Defaults to `false`. |
+| `S3_PUBLIC_URL` | No | Public base URL for serving files (e.g. an R2 custom domain). Omit for plain AWS S3. |
 | `GITHUB_TOKEN` | No | Raises the GitHub API rate limit for live activity data. |
 | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | No | Dev-only credentials used by `npx payload seed` for the initial admin account. |
 
@@ -66,7 +72,7 @@ Where to edit what:
   process, and stats.
 - **Projects** — case studies: problem, role, outcome + metric, timeline, media, and links.
   Slugs drive `/projects/<slug>`.
-- **Media** — images. Use external URLs in production (Vercel's filesystem is read-only).
+- **Media** — images. With S3 configured, uploads go to the bucket; otherwise use external URLs in production (Vercel's filesystem is read-only).
 - **Contact Submissions** — messages sent from the contact form.
 
 ## Useful scripts
@@ -86,7 +92,12 @@ the standard build command is `npx next build`.
 ## Production notes
 
 Deploy to Vercel. Set `DATABASE_URI` to a Neon Postgres connection string and a real
-`PAYLOAD_SECRET`. Add `BLOB_READ_WRITE_TOKEN` if you need uploads beyond local disk.
+`PAYLOAD_SECRET`. For media uploads, set the `S3_*` variables to an S3-compatible store
+such as AWS S3 or Cloudflare R2: `S3_BUCKET` activates the adapter, with `S3_REGION`,
+`S3_ACCESS_KEY_ID` and `S3_SECRET_ACCESS_KEY` required. Add `S3_ENDPOINT`,
+`S3_FORCE_PATH_STYLE` and `S3_PUBLIC_URL` for R2/MinIO-style setups. Without these
+variables, media stays on local disk — Vercel's filesystem is read-only, so production
+needs S3 or external URLs for uploads to persist.
 
 ## Why `type: module`
 
