@@ -117,6 +117,12 @@ async function main() {
       }
       assert.equal(await count(), before, "submission count did not return to baseline");
     });
+    // The postgres pool keeps the event loop alive; close it so the gate ends.
+    try {
+      await payload.destroy();
+    } catch {
+      /* best effort — the explicit exit below is the real guarantee */
+    }
   }
 }
 
@@ -124,6 +130,7 @@ main()
   .then(() => {
     if (failed) process.exit(1);
     console.log("CONTACT ACTION TEST PASS");
+    process.exit(0);
   })
   .catch((error) => {
     console.error("FAIL unexpected", error instanceof Error ? error.message : String(error));
