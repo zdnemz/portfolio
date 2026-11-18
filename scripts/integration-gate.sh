@@ -3,7 +3,8 @@
 set -euo pipefail
 
 TMP_ROOT="${TMPDIR:-/tmp}"
-BASE="http://localhost:3111"
+PORT="${GATE_PORT:-3111}"
+BASE="http://localhost:$PORT"
 ADMIN_EMAIL="${SEED_ADMIN_EMAIL:-admin@zdnemz.dev}"
 ADMIN_PASSWORD="${SEED_ADMIN_PASSWORD:-portfolio-dev-2026}"
 
@@ -11,7 +12,7 @@ docker compose up -d --wait postgres
 npx payload seed
 npx next build --webpack
 
-npx next start -p 3111 > "$TMP_ROOT/portfolio-x1-next.log" 2>&1 &
+npx next start -p "$PORT" > "$TMP_ROOT/portfolio-x1-next.log" 2>&1 &
 SRV=$!
 trap 'kill "$SRV" 2>/dev/null || true; pkill -P "$SRV" 2>/dev/null || true' EXIT
 
@@ -50,6 +51,23 @@ done
 anchors=$(grep -o 'href="#[a-zA-Z0-9_-]*"' "$HOME_HTML" | sed 's/href="#//; s/"$//' | sort -u || true)
 for id in $anchors; do
   grep -Fq "id=\"$id\"" "$HOME_HTML" || { echo "FAIL anchor #$id has no target"; fail=1; }
+done
+
+# The site chrome is mounted on every route, but section ids only exist on /.
+# Off home, section links must render as href="/#id" (no dead same-page anchor)
+# and the target page must actually resolve.
+ANCHOR_SLUG=$(curl -s "$BASE/api/projects?limit=1&depth=0" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>console.log(JSON.parse(d).docs[0].slug))")
+for page_path in /projects "/projects/$ANCHOR_SLUG"; do
+  OFFHOME_HTML="$TMP_ROOT/portfolio-x1-offhome.html"
+  curl -s "$BASE$page_path" > "$OFFHOME_HTML"
+  for id in $(grep -o 'href="#[a-z-]*"' "$OFFHOME_HTML" | sed 's/href="#//;s/"//' | sort -u || true); do
+    grep -Fq "id=\"$id\"" "$OFFHOME_HTML" || { echo "FAIL dead anchor #$id on $page_path"; fail=1; }
+  done
+  for target in $(grep -o 'href="/#[a-z-]*"' "$OFFHOME_HTML" | sed 's/href="//;s/"//' | sort -u || true); do
+    path_only=${target%%#*}
+    code=$(curl -s -o /dev/null -w '%{http_code}' "$BASE$path_only")
+    [ "$code" = 200 ] || { echo "FAIL off-home section link $target -> $code on $page_path"; fail=1; }
+  done
 done
 
 # Every seeded project detail renders.
