@@ -160,6 +160,7 @@ async function main() {
   // identity.tagline must reach the visible DOM, not just the flight payload.
   // Assert both the tag-stripped text and the raw HTML so a dropped render
   // (which still leaves the value in the embedded site prop) cannot pass.
+  // Success prints exactly: PASS identity tagline visible
   const tagline = site.identity?.tagline;
   if (!tagline || !tagline.trim()) {
     no("identity tagline visible", "no non-empty identity.tagline in /api/globals/site");
