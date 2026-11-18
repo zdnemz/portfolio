@@ -2,7 +2,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
+import { s3Storage } from "@payloadcms/storage-s3";
 
 import { Users } from "./src/collections/Users";
 import { Projects } from "./src/collections/Projects";
@@ -11,6 +11,8 @@ import { ContactSubmissions } from "./src/collections/ContactSubmissions";
 import { Site } from "./src/globals/Site";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const publicUrl = process.env.S3_PUBLIC_URL;
 
 export default buildConfig({
   // Build-time fallback only. Production must always set PAYLOAD_SECRET.
@@ -36,13 +38,29 @@ export default buildConfig({
   }),
   bin: [{ scriptPath: "scripts/seed.ts", key: "seed" }],
   plugins: [
-    ...(process.env.BLOB_READ_WRITE_TOKEN
-      ? [
-          vercelBlobStorage({
-            collections: { media: true },
-            token: process.env.BLOB_READ_WRITE_TOKEN,
-          }),
-        ]
-      : []),
+    s3Storage({
+      enabled: Boolean(process.env.S3_BUCKET),
+      collections: {
+        media: publicUrl
+          ? {
+              disablePayloadAccessControl: true,
+              generateFileURL: ({ filename, prefix }) => {
+                const key = prefix ? `${prefix}/${filename}` : filename;
+                return `${publicUrl}/${key}`;
+              },
+            }
+          : true,
+      },
+      bucket: process.env.S3_BUCKET ?? "",
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID ?? "",
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? "",
+        },
+        region: process.env.S3_REGION,
+        endpoint: process.env.S3_ENDPOINT,
+        forcePathStyle: process.env.S3_FORCE_PATH_STYLE === "true",
+      },
+    }),
   ],
 });
