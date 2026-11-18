@@ -68,6 +68,18 @@ const visibleText = (html) =>
         .replace(/<[^>]+>/g, " "),
     ),
   );
+// Tag-scoped, so a value echoed in the flight payload can't satisfy a metadata
+// assertion. Next may stream metadata into <body>, so scan the whole document
+// for the actual <title>/<meta> tags rather than only the <head> section.
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const hasTitle = (html, value) =>
+  new RegExp(`<title\\b[^>]*>[\\s\\S]*?${escapeRe(value)}[\\s\\S]*?<\\/title>`, "i").test(
+    html,
+  );
+const hasDescriptionMeta = (html, value) =>
+  [...html.matchAll(/<meta\b[^>]*>/gi)].some(
+    (m) => /\bname=["']description["']/i.test(m[0]) && m[0].includes(value),
+  );
 
 async function text(url, options) {
   const r = await fetch(url, options);
@@ -144,7 +156,7 @@ async function main() {
 
   // 4. Every CMS-owned text/textarea value appears in the served HTML.
   const homeGroups = [
-    "hero", "identity", "stats", "projectsSection", "services", "process",
+    "seo", "hero", "identity", "stats", "projectsSection", "services", "process",
     "about", "testimonials", "faq", "now", "contact", "nav", "footer",
   ];
   for (const group of homeGroups) {
@@ -238,6 +250,42 @@ async function main() {
       after.includes(original)
         ? ok("restore original headline")
         : no("restore original headline", "original headline did not reappear");
+    }
+  }
+
+  // Archive metadata must come from the CMS too. Edit seo, re-fetch /projects
+  // with no rebuild, and assert the marker is in the metadata tags themselves.
+  // Expected output: PASS archive CMS metadata (plus the restore line).
+  const originalSeo = site.seo || {};
+  const archiveTitle = "GOALCHECK-ARCHIVE-TITLE";
+  const archiveDesc = "GOALCHECK-ARCHIVE-DESC";
+  try {
+    const patch = await patchSite({
+      seo: { ...originalSeo, title: archiveTitle, description: archiveDesc },
+    });
+    if (!patch.ok) {
+      no("archive CMS metadata", `PATCH rejected: ${patch.status} ${(await patch.text()).slice(0, 200)}`);
+    } else {
+      const archiveRaw = (await text(`${BASE}/projects`)).body;
+      const titleOk = hasTitle(archiveRaw, archiveTitle);
+      const descOk = hasDescriptionMeta(archiveRaw, archiveDesc);
+      titleOk && descOk
+        ? ok("archive CMS metadata", "<title> + <meta name=description> updated without rebuild")
+        : no("archive CMS metadata", `title tag: ${titleOk}, description meta: ${descOk}`);
+    }
+  } finally {
+    const restore = await patchSite({ seo: originalSeo });
+    if (!restore.ok) {
+      no("archive CMS metadata restore", `PATCH rejected: ${restore.status}`);
+    } else {
+      const restored = (await text(`${BASE}/projects`)).body;
+      const titleOk = originalSeo.title ? hasTitle(restored, originalSeo.title) : true;
+      const descOk = originalSeo.description
+        ? hasDescriptionMeta(restored, originalSeo.description)
+        : true;
+      titleOk && descOk
+        ? ok("archive CMS metadata restore", "originals reappear in metadata tags")
+        : no("archive CMS metadata restore", `title tag: ${titleOk}, description meta: ${descOk}`);
     }
   }
 
