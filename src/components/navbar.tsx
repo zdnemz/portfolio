@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Menu, X, Search } from "lucide-react";
@@ -24,6 +25,8 @@ function openPalette() {
 export default function Navbar({ site }: { site?: SiteContent }) {
   const [isOpen, setIsOpen] = useState(false);
   const activeSection = useActiveSection(SECTION_IDS);
+  const pathname = usePathname();
+  const sectionHref = (href: string) => (pathname === "/" ? href : "/" + href);
 
   // Optional only for the pre-S1 layout, which mounts chrome before site data
   // exists. S1 always passes `site`; render nothing until it does.
@@ -56,7 +59,7 @@ export default function Navbar({ site }: { site?: SiteContent }) {
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                href={item.href.startsWith("#") ? sectionHref(item.href) : item.href}
                 aria-current={isActive ? "true" : undefined}
                 className={`label-mono border-2 px-3 py-1.5 transition-all duration-150 ${
                   isActive
@@ -128,7 +131,7 @@ export default function Navbar({ site }: { site?: SiteContent }) {
               {site.nav.items.map((item, index) => (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={item.href.startsWith("#") ? sectionHref(item.href) : item.href}
                   onClick={() => setIsOpen(false)}
                   className="flex items-center justify-between border-2 border-transparent py-3 font-display text-2xl font-bold tracking-tight transition-all duration-150 hover:border-border hover:bg-foreground hover:px-3 hover:text-background"
                 >
