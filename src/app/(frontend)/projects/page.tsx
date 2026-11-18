@@ -10,10 +10,28 @@ import { Reveal } from "@/components/ui/motion-wrapper";
 // Content is edited in the CMS, so the archive is never frozen at build time.
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Projects",
-  description: "Case studies from shipped client and personal work.",
-};
+// Metadata follows CMS edits without a rebuild, like the home and case studies.
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSite();
+  const title = site.seo.title || site.identity.name || "Portfolio";
+  const description = site.seo.description || site.identity.role || "";
+  const image = site.seo.ogImageUrl || "/api/og";
+
+  return {
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_SERVER_URL || "https://zdnemz.vercel.app",
+    ),
+    title,
+    description,
+    ...(site.seo.keywords ? { keywords: site.seo.keywords } : {}),
+    openGraph: {
+      title,
+      description,
+      url: "/projects",
+      images: [image],
+    },
+  };
+}
 
 export default async function ProjectsPage() {
   const [site, projects] = await Promise.all([getSite(), getAllProjects()]);
