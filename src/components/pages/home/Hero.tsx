@@ -10,9 +10,10 @@ import type { SiteContent } from "@/lib/cms/types";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
- * Props are optional only so the pre-CMS home page still type-checks until S1
- * replaces it; without site data the section renders nothing rather than
- * inventing copy. S1 always passes the full object.
+ * The site prop is optional because without CMS data the section renders
+ * nothing rather than inventing copy. The scroll callbacks are optional
+ * because Hero falls back to scrolling to the page's section ids itself —
+ * the server-rendered home page cannot pass functions to this client component.
  */
 export default function Hero({
   site,
@@ -25,6 +26,12 @@ export default function Hero({
 }) {
   const reduce = useReducedMotion();
   if (!site) return null;
+
+  const goTo = (id: string) => () => {
+    document
+      .getElementById(id)
+      ?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  };
 
   const marquee = site.hero.marquee.map((item) => item.label);
 
@@ -90,7 +97,7 @@ export default function Hero({
           className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4"
         >
           <MagneticButton strength={10} className="inline-flex">
-            <Button size="lg" onClick={onScrollToProjects} className="cursor-pointer">
+            <Button size="lg" onClick={onScrollToProjects ?? goTo("projects")} className="cursor-pointer">
               {site.hero.primaryCta}
             </Button>
           </MagneticButton>
@@ -98,7 +105,7 @@ export default function Hero({
             <Button
               size="lg"
               variant="outline"
-              onClick={onScrollToContact}
+              onClick={onScrollToContact ?? goTo("contact")}
               className="cursor-pointer"
             >
               {site.hero.secondaryCta}
