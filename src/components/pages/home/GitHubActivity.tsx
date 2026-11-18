@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   GitBranch,
   GitPullRequest,
@@ -13,6 +12,7 @@ import {
 import { Container } from "@/components/container";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/motion-wrapper";
 import type { GithubEvent } from "@/lib/github";
+import type { SiteContent } from "@/lib/cms/types";
 
 /** Icon + verb per GitHub event type. Pushes get the accent treatment. */
 const EVENT_CONFIG: Record<
@@ -39,83 +39,59 @@ function timeAgo(iso: string): string {
 }
 
 /**
- * Recent public GitHub activity, fetched through /api/github so the call is
- * made server-side and cached for 10 minutes — the rate limit is spent once
- * per window for the whole site instead of once per visitor.
+ * Recent public GitHub activity. Fetched server-side and cached so the rate
+ * limit is spent once per window for the whole site instead of once per
+ * visitor.
  *
- * There is no curated fallback: if GitHub is unreachable the section removes
- * itself rather than presenting invented commits as live activity.
+ * There is no curated fallback: when there is nothing to show, the CMS copy
+ * says so rather than presenting invented commits as live activity.
  */
-export default function GitHubActivity() {
-  const [events, setEvents] = React.useState<GithubEvent[] | null>(null);
-  const [failed, setFailed] = React.useState(false);
-
-  React.useEffect(() => {
-    let active = true;
-    fetch("/api/github")
-      .then(async (res) => {
-        const json = await res.json().catch(() => null);
-        if (!res.ok || !json?.success) throw new Error("request failed");
-        return Array.isArray(json.data) ? (json.data as GithubEvent[]) : [];
-      })
-      .then((list) => {
-        if (!active) return;
-        if (list.length > 0) setEvents(list);
-        else setFailed(true);
-      })
-      .catch(() => {
-        if (active) setFailed(true);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  if (failed) return null;
+export default function GitHubActivity({
+  site,
+  events,
+}: {
+  site?: SiteContent;
+  events?: GithubEvent[];
+}) {
+  // Optional only for the pre-CMS home page S1 replaces.
+  if (!site) return null;
+  const copy = site.github;
+  const list = events ?? [];
 
   return (
     <section id="github" className="section-pad rule-top">
       <Container>
         <Reveal className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
-            <span className="label-mono text-primary">/ Live activity</span>
-            <h2 className="heading-section mt-3 max-w-[18ch]">
-              Currently shipping.
-            </h2>
+            <span className="label-mono text-primary">{copy.eyebrow}</span>
+            <h2 className="heading-section mt-3 max-w-[18ch]">{copy.heading}</h2>
           </div>
-          <a
-            href="https://github.com/zdnemz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 border-2 border-border bg-card px-4 py-2 shadow-brutal-sm transition-all duration-150 hover:-translate-x-[1px] hover:-translate-y-[1px] hover:bg-foreground hover:text-background hover:shadow-brutal active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-          >
-            <span className="label-mono">GitHub profile</span>
-            <ExternalLink
-              size={15}
-              strokeWidth={2.5}
-              className="transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-            />
-          </a>
+          {copy.profileUrl && (
+            <a
+              href={copy.profileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 border-2 border-border bg-card px-4 py-2 shadow-brutal-sm transition-all duration-150 hover:-translate-x-[1px] hover:-translate-y-[1px] hover:bg-foreground hover:text-background hover:shadow-brutal active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            >
+              <span className="label-mono">{copy.profileLabel}</span>
+              <ExternalLink
+                size={15}
+                strokeWidth={2.5}
+                className="transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </a>
+          )}
         </Reveal>
 
-        {events === null ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="flex animate-pulse items-center gap-4 border-2 border-border bg-card p-4 shadow-brutal-sm"
-              >
-                <div className="size-10 border-2 border-border bg-muted" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 w-1/3 bg-muted" />
-                  <div className="h-3 w-1/2 bg-muted" />
-                </div>
-              </div>
-            ))}
-          </div>
+        {list.length === 0 ? (
+          <Reveal delay={0.05}>
+            <p className="border-t-2 border-border py-10 text-muted-foreground">
+              {copy.emptyMessage}
+            </p>
+          </Reveal>
         ) : (
           <Stagger staggerDelay={0.08} className="space-y-3">
-            {events.map((event) => {
+            {list.map((event) => {
               const config = EVENT_CONFIG[event.type] ?? EVENT_CONFIG.PushEvent;
               const Icon = config.icon;
               return (
