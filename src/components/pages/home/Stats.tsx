@@ -4,6 +4,7 @@ import * as React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Container } from "@/components/container";
 import { Reveal } from "@/components/ui/motion-wrapper";
+import type { SiteContent } from "@/lib/cms/types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -38,7 +39,7 @@ function StatCell({
   index,
 }: {
   value: number;
-  suffix?: string;
+  suffix?: string | null;
   label: string;
   index: number;
 }) {
@@ -67,70 +68,22 @@ function StatCell({
   );
 }
 
-type Stat = { value: number; suffix?: string; label: string };
-
-/** Placeholder cell — same box, no number, while the API call is in flight. */
-function StatCellSkeleton() {
-  return (
-    <div className="flex flex-col border-2 border-background bg-background p-5 text-foreground">
-      <div className="flex h-[2.75rem] items-end sm:h-[3.25rem]">
-        <div className="h-8 w-16 animate-pulse bg-muted sm:h-10 sm:w-20" />
-      </div>
-      <div className="mt-3 border-t-2 border-background pt-2">
-        <div className="h-3 w-24 animate-pulse bg-muted" />
-      </div>
-    </div>
-  );
-}
-
-/**
- * Headline numbers, all live: years shipping and public repos come from the
- * GitHub profile, project and tech counts from the Notion database. If the
- * API call fails the section removes itself rather than showing stale or
- * invented figures.
- */
-export default function Stats() {
-  const [stats, setStats] = React.useState<Stat[] | null>(null);
-  const [failed, setFailed] = React.useState(false);
-
-  React.useEffect(() => {
-    let active = true;
-    fetch("/api/stats")
-      .then(async (res) => {
-        const json = await res.json().catch(() => null);
-        if (!res.ok || !json?.success) throw new Error("request failed");
-        return json.data as Stat[];
-      })
-      .then((data) => {
-        if (!active) return;
-        if (Array.isArray(data) && data.length > 0) setStats(data);
-        else setFailed(true);
-      })
-      .catch(() => {
-        if (active) setFailed(true);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  if (failed) return null;
+/** Headline numbers, edited in the CMS. Renders nothing when none exist. */
+export default function Stats({ site }: { site?: SiteContent }) {
+  // Optional only for the pre-CMS home page S1 replaces; it renders nothing.
+  if (!site || site.stats.items.length === 0) return null;
 
   return (
     <section className="rule-top bg-foreground py-14 text-background">
       <Container>
         <Reveal className="mb-6 flex items-center justify-between gap-4">
-          <span className="label-mono text-primary">/ By the numbers</span>
-          <span className="label-mono text-background/50">
-            Live from GitHub &amp; Notion
-          </span>
+          <span className="label-mono text-primary">{site.stats.eyebrow}</span>
+          <span className="label-mono text-background/50">{site.stats.note}</span>
         </Reveal>
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {stats
-            ? stats.map((stat, i) => (
-                <StatCell key={stat.label} {...stat} index={i} />
-              ))
-            : [0, 1, 2, 3].map((i) => <StatCellSkeleton key={i} />)}
+          {site.stats.items.map((stat, i) => (
+            <StatCell key={stat.label} {...stat} index={i} />
+          ))}
         </div>
       </Container>
     </section>
