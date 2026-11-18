@@ -4,11 +4,12 @@ import * as React from "react";
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
 import { Search, CornerDownLeft, ArrowUp, ArrowDown } from "lucide-react";
-import type { Project } from "@/types/project";
+import { SECTION_IDS } from "@/lib/section-ids";
+import type { ProjectCard, SiteContent } from "@/lib/cms/types";
 
 /**
  * CommandPalette — a brutalist Cmd+K / Ctrl+K palette for quick navigation.
- * Searches sections and the live project list from Notion. Keyboard-first:
+ * Searches page sections and the project list. Keyboard-first:
  * ArrowUp/Down to move, Enter to run, Esc to close. Fade+scale mount, no
  * React state for the open/close flag (driven by a global keydown listener +
  * a CSS-driven visible state to avoid the set-state-in-effect lint rule).
@@ -25,11 +26,16 @@ type CmdItem = {
   keywords?: string;
 };
 
-export default function CommandPalette() {
+export default function CommandPalette({
+  site,
+  projects = [],
+}: {
+  site?: SiteContent;
+  projects?: ProjectCard[];
+}) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
-  const [projects, setProjects] = React.useState<Project[]>([]);
 
   // Global Cmd/Ctrl+K to toggle. Mounted once on the client.
   React.useEffect(() => {
@@ -47,67 +53,50 @@ export default function CommandPalette() {
 
   const close = React.useCallback(() => setOpen(false), []);
 
-  // Load the real project list the first time the palette is opened — no
-  // point spending a request on visitors who never press Cmd+K.
-  React.useEffect(() => {
-    if (!open || projects.length > 0) return;
-    let active = true;
-    fetch("/api/projects?limit=100")
-      .then(async (res) => {
-        const json = await res.json().catch(() => null);
-        if (!res.ok || !json?.success) throw new Error("request failed");
-        return Array.isArray(json.data) ? (json.data as Project[]) : [];
-      })
-      .then((list) => {
-        if (active) setProjects(list);
-      })
-      .catch(() => {
-        // Palette still navigates sections; the project group stays empty.
-      });
-    return () => {
-      active = false;
-    };
-  }, [open, projects.length]);
-
   const items: CmdItem[] = React.useMemo(() => {
-    const nav = (label: string, href: string, hint: string): CmdItem => ({
-      id: `nav-${href}`,
-      label,
-      hint,
-      group: "Navigate",
-      onSelect: () => {
-        close();
-        if (href.startsWith("#")) {
-          document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
-        } else {
-          router.push(href);
-        }
-      },
+    if (!site) return [];
+
+    const go = (href: string) => {
+      close();
+      if (href.startsWith("#")) {
+        document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        router.push(href);
+      }
+    };
+
+    const sections = SECTION_IDS.map((id): CmdItem => {
+      const navItem = site.nav.items.find((item) => item.href === `#${id}`);
+      return {
+        id: `nav-${id}`,
+        label: navItem?.label || (id === "top" ? site.identity.name : id),
+        hint: id === "top" ? site.identity.role : "",
+        group: "Navigate",
+        onSelect: () => go(`#${id}`),
+      };
     });
+
     return [
-      nav("Home", "/", "Top of page"),
-      nav("Work", "#projects", "Selected work"),
-      nav("Process", "#process", "How I work"),
-      nav("About", "#about", "Stack reference"),
-      nav("Testimonials", "#testimonials", "Endorsements"),
-      nav("Activity", "#github", "Recent GitHub activity"),
-      nav("Contact", "#contact", "Get in touch"),
-      nav("All projects", "/projects", "Full archive"),
+      ...sections,
+      {
+        id: "nav-archive",
+        label: site.projectPage.archiveHeading,
+        hint: site.projectPage.archiveEyebrow,
+        group: "Navigate",
+        onSelect: () => go("/projects"),
+      },
       ...projects.map(
         (p): CmdItem => ({
-          id: `project-${p.id}`,
-          label: p.name,
+          id: `project-${p.slug}`,
+          label: p.title,
           hint: [p.projectType, p.status].filter(Boolean).join(" · "),
           group: "Projects",
-          keywords: p.technologies.join(" "),
-          onSelect: () => {
-            close();
-            router.push(`/projects/${p.id}`);
-          },
+          keywords: p.stack.map((s) => s.label).join(" "),
+          onSelect: () => go(`/projects/${p.slug}`),
         })
       ),
     ];
-  }, [router, close, projects]);
+  }, [router, close, projects, site]);
 
   // Group items for rendering
   const groups = React.useMemo(() => {
@@ -120,7 +109,7 @@ export default function CommandPalette() {
     return Array.from(map.entries());
   }, [items]);
 
-  if (!open) return null;
+  if (!open || !site) return null;
 
   return (
     <div
