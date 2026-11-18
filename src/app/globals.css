@@ -1,9 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Enable Tailwind v4 `dark:` variants driven by the .dark class (next-themes). */
-@custom-variant dark (&:is(.dark *));
-
 /*
   NEO-BRUTALISM DESIGN SYSTEM — "Engineered Paper"
   -------------------------------------------------
@@ -99,49 +96,6 @@
   --shadow-brutal-coral: 4px 4px 0 0 var(--primary);
 }
 
-/*
-  DARK VARIANT — "Engineered Ink"
-  -------------------------------
-  Inverts the canvas to warm near-black while keeping the single coral accent
-  and the hard ink borders (now rendered in cream so they still read on dark).
-  The brutalist shadow language is preserved — offset, zero-blur — just tinted
-  to the dark surface hue. Triggered by .dark on <html> via next-themes.
-*/
-.dark {
-  --background: oklch(0.185 0.014 60);            /* warm near-black, lifted slightly for depth */
-  --foreground: oklch(0.95 0.008 85);             /* warm cream ink */
-  --card: oklch(0.225 0.016 60);                  /* slightly lifted surface */
-  --card-foreground: oklch(0.95 0.008 85);
-  --popover: oklch(0.225 0.016 60);
-  --popover-foreground: oklch(0.95 0.008 85);
-
-  /* Coral accent preserved — slightly lifted chroma for dark-bg legibility */
-  --primary: oklch(0.68 0.19 32);
-  --primary-foreground: oklch(0.185 0.014 60);
-
-  --secondary: oklch(0.95 0.008 85);
-  --secondary-foreground: oklch(0.185 0.014 60);
-
-  --muted: oklch(0.275 0.016 60);
-  --muted-foreground: oklch(0.78 0.012 85);       /* lifted for WCAG AA contrast on dark */
-
-  --accent: oklch(0.275 0.016 60);
-  --accent-foreground: oklch(0.95 0.008 85);
-
-  --destructive: oklch(0.62 0.21 27);
-  --destructive-foreground: oklch(0.98 0.01 60);
-
-  --border: oklch(0.95 0.008 85);                 /* cream borders on dark */
-  --input: oklch(0.225 0.016 60);
-  --ring: oklch(0.68 0.19 32);
-
-  /* Shadows now use the cream border color so they read on the dark canvas */
-  --shadow-brutal: 4px 4px 0 0 var(--border);
-  --shadow-brutal-sm: 2px 2px 0 0 var(--border);
-  --shadow-brutal-lg: 6px 6px 0 0 var(--border);
-  --shadow-brutal-coral: 4px 4px 0 0 var(--primary);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -164,7 +118,7 @@
   }
 
   /* Paper grain — fixed, non-scrolling, never repaints on scroll.
-     Multiply on light paper, screen on dark ink (so it still reads). */
+     Multiply-blended onto the warm cream paper so the grain reads as tooth. */
   body::before {
     content: "";
     position: fixed;
@@ -174,10 +128,6 @@
     opacity: 0.05;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     mix-blend-mode: multiply;
-  }
-  .dark body::before {
-    mix-blend-mode: screen;
-    opacity: 0.04;
   }
 
   /* Hard, visible focus for keyboard users */
@@ -320,7 +270,8 @@
   Triggered by the "Download CV" button which calls window.print().
 */
 @media print {
-  /* Force light theme regardless of the .dark toggle */
+  /* The site is light-only, so print always uses the light palette
+     with a pure-white canvas for maximum ink economy. */
   :root {
     --background: oklch(1 0 0) !important;
     --foreground: oklch(0.16 0.01 60) !important;
@@ -337,7 +288,6 @@
   header,
   footer,
   [aria-label="Skip to content"],
-  [aria-label="Toggle color theme"],
   [aria-label="Open command palette"],
   [aria-label="Open command palette (Cmd+K)"],
   #now {
