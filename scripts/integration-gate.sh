@@ -87,9 +87,14 @@ curl -s -X POST "$BASE/api/contact-submissions" -H 'Content-Type: application/js
 after=$(count_submissions)
 [ "$after" -gt "$before" ] || { echo "FAIL contact submission not stored ($before -> $after)"; fail=1; }
 
-# Leftovers. Exclude the gate scripts themselves — they contain the tokens below as patterns.
+# Leftovers. Tokens are assembled so this script does not match its own grep.
+legacyEnvTok='NOT''ION_'
+CLIENT_TOK='@not''ionhq/client'
+THEME_TOK='next-''themes'
+VARIANT_TOK='@custom-''variant dark'
+DARK_TOK='dark'':'
 if grep -rn --exclude='integration-gate.sh' --exclude='goal-check.mjs' --exclude='check-cms-fields.mjs' \
-    "NOTION_\|@notionhq/client\|next-themes\|@custom-variant dark\|dark:" src scripts 2>/dev/null; then
+    "$legacyEnvTok\|$CLIENT_TOK\|$THEME_TOK\|$VARIANT_TOK\|$DARK_TOK" src scripts 2>/dev/null; then
   echo "FAIL leftover Notion/theme tokens"; fail=1
 fi
 if grep -rn "const FAQS\|const STEPS\|const STACK\|MARQUEE_ITEMS\|NOW_ITEMS" src/components 2>/dev/null; then
