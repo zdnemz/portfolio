@@ -1,9 +1,21 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
+import { getSite } from "@/lib/cms/get-site";
 
-export function GET(req: NextRequest) {
+export const dynamic = "force-dynamic";
+
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const title = searchParams.get("title") || "Maulana Zidane | Fullstack Developer";
+  const site = await getSite();
+
+  const title =
+    searchParams.get("title") ||
+    site.seo.title ||
+    site.identity.name ||
+    "Portfolio";
+  const kicker =
+    site.identity.wordmark || site.identity.name || "Fullstack Developer";
+  const description = site.seo.description || site.identity.name || "Portfolio";
 
   return new ImageResponse(
     (
@@ -24,9 +36,12 @@ export function GET(req: NextRequest) {
         }}
       >
         <div style={{ color: "#7aa2f7", fontSize: 26, marginBottom: 24, fontWeight: 400 }}>
-          Fullstack Developer
+          {kicker}
         </div>
         <div>{title}</div>
+        <div style={{ color: "#a1a1aa", fontSize: 26, marginTop: 24, fontWeight: 400, letterSpacing: 0 }}>
+          {description}
+        </div>
       </div>
     ),
     {
