@@ -136,6 +136,9 @@ async function main() {
 
   const homeRaw = (await text(`${BASE}/`)).body;
   const home = decode(homeRaw);
+  // script/style/tag-stripped view of the home page — a value can sit in the
+  // RSC flight payload yet never reach the DOM; only this proves it is visible.
+  const homeVisible = visibleText(home);
   const site = await json(`${BASE}/api/globals/site`);
   const projects = (await json(`${BASE}/api/projects?limit=100&depth=0`)).docs;
   if (!projects.length) {
@@ -152,6 +155,21 @@ async function main() {
     value && home.includes(value)
       ? ok(`SSR ${name}`)
       : no(`SSR ${name}`, `missing from home HTML: ${value}`);
+  }
+
+  // identity.tagline must reach the visible DOM, not just the flight payload.
+  // Assert both the tag-stripped text and the raw HTML so a dropped render
+  // (which still leaves the value in the embedded site prop) cannot pass.
+  // Success prints exactly: PASS identity tagline visible
+  const tagline = site.identity?.tagline;
+  if (!tagline || !tagline.trim()) {
+    no("identity tagline visible", "no non-empty identity.tagline in /api/globals/site");
+  } else {
+    const inVisible = homeVisible.includes(squash(tagline));
+    const inRaw = home.includes(tagline);
+    inVisible && inRaw
+      ? ok("identity tagline visible")
+      : no("identity tagline visible", `visible: ${inVisible}, raw HTML: ${inRaw}`);
   }
 
   // 4. Every CMS-owned text/textarea value appears in the served HTML.

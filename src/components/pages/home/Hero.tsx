@@ -90,6 +90,10 @@ export default function Hero({
           {site.hero.intro}
         </motion.p>
 
+        {site.identity.tagline && (
+          <p className="label-mono mt-4 text-foreground">{site.identity.tagline}</p>
+        )}
+
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
