@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Command } from "cmdk";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Search, CornerDownLeft, ArrowUp, ArrowDown } from "lucide-react";
 import { SECTION_IDS } from "@/lib/section-ids";
 import type { ProjectCard, SiteContent } from "@/lib/cms/types";
@@ -34,6 +34,7 @@ export default function CommandPalette({
   projects?: ProjectCard[];
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
 
@@ -56,10 +57,15 @@ export default function CommandPalette({
   const items: CmdItem[] = React.useMemo(() => {
     if (!site) return [];
 
+    const sectionHref = (href: string) => (pathname === "/" ? href : "/" + href);
     const go = (href: string) => {
       close();
       if (href.startsWith("#")) {
-        document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+        if (pathname === "/") {
+          document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+        } else {
+          router.push(sectionHref(href));
+        }
       } else {
         router.push(href);
       }
@@ -96,7 +102,7 @@ export default function CommandPalette({
         })
       ),
     ];
-  }, [router, close, projects, site]);
+  }, [router, pathname, close, projects, site]);
 
   // Group items for rendering
   const groups = React.useMemo(() => {
