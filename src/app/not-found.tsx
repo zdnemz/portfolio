@@ -17,7 +17,7 @@ export default function NotFound() {
             <span className="ml-auto label-mono text-primary">404</span>
           </div>
           <pre className="overflow-x-auto p-4 font-mono text-sm leading-relaxed text-foreground sm:p-6">
-            <code>{`> GET ${"`"}{pathname}${"`"}
+            <code>{`> route lookup failed
 ${"✗"} route not found
 ${"✓"} 0 modules matched
 ${"→"} suggestion: try the links below`}</code>
