@@ -70,7 +70,7 @@ export default function CursorSpotlight({
           marginLeft: -size / 2,
           marginTop: -size / 2,
         }}
-        className="absolute rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.25)_0%,transparent_70%)] opacity-0 mix-blend-overlay group-hover:opacity-100 transition-opacity duration-300 dark:bg-[radial-gradient(circle,rgba(255,255,255,0.18)_0%,transparent_70%)]"
+        className="absolute rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.25)_0%,transparent_70%)] opacity-0 mix-blend-overlay group-hover:opacity-100 transition-opacity duration-300"
       />
     </motion.div>
   );
