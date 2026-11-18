@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { SECTION_IDS } from "@/lib/section-ids";
 import type { SiteContent } from "@/lib/cms/types";
@@ -26,6 +27,8 @@ export default function ReadingProgressRail({ site }: { site?: SiteContent }) {
     mass: 0.3,
   });
   const activeSection = useActiveSection(SECTION_IDS);
+  const pathname = usePathname();
+  const sectionHref = (href: string) => (pathname === "/" ? href : "/" + href);
 
   // Endorsements and Activity only render once their data arrives, and drop
   // out entirely when it doesn't. Track which sections are actually mounted
@@ -70,7 +73,7 @@ export default function ReadingProgressRail({ site }: { site?: SiteContent }) {
               return (
                 <a
                   key={s.id}
-                  href={`#${s.id}`}
+                  href={sectionHref(`#${s.id}`)}
                   className="group pointer-events-auto flex items-center gap-2"
                   aria-label={s.label}
                   aria-current={isActive ? "true" : undefined}
