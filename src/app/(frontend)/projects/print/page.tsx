@@ -95,7 +95,9 @@ export default async function PrintPage() {
             <h2 className="font-mono text-xs font-bold uppercase tracking-widest">
               {copy.profileHeading}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed">{site.about.bio}</p>
+            <p className="mt-2 text-sm leading-relaxed whitespace-pre-line">
+              {site.about.bio}
+            </p>
           </div>
 
           {site.about.groups.length > 0 && (
@@ -122,7 +124,7 @@ export default async function PrintPage() {
             </h2>
 
             {projects.length === 0 ? (
-              <p className="py-6 text-sm text-neutral-600">
+              <p className="py-6 text-sm text-neutral-600 whitespace-pre-line">
                 {labels.emptyMessage}
               </p>
             ) : (
@@ -146,11 +148,11 @@ export default async function PrintPage() {
                         {labels.metaClientLabel}: {project.client} ·{" "}
                         {labels.metaStatusLabel}: {statusLabel(project.status)}
                       </p>
-                      <p className="mt-2 text-sm leading-relaxed">
+                      <p className="mt-2 text-sm leading-relaxed whitespace-pre-line">
                         {project.summary}
                       </p>
 
-                      <p className="mt-3 text-sm leading-relaxed">
+                      <p className="mt-3 text-sm leading-relaxed whitespace-pre-line">
                         <span className="font-bold">{labels.outcomeLabel}: </span>
                         {metric && (
                           <span className="font-mono font-bold">
@@ -182,7 +184,7 @@ export default async function PrintPage() {
           </div>
 
           <div className="pt-2 font-mono text-xs text-neutral-500">
-            <p>{copy.footerNote}</p>
+            <p className="whitespace-pre-line">{copy.footerNote}</p>
           </div>
         </div>
       </main>

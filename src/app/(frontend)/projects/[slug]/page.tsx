@@ -76,7 +76,7 @@ export default async function ProjectPage({ params }: PageProps) {
           </span>
 
           <h1 className="heading-section mt-4 max-w-[20ch]">{project.title}</h1>
-          <p className="mt-6 max-w-[62ch] text-lg leading-relaxed text-muted-foreground">
+          <p className="mt-6 max-w-[62ch] text-lg leading-relaxed text-muted-foreground whitespace-pre-line">
             {project.summary}
           </p>
         </Reveal>
@@ -85,14 +85,14 @@ export default async function ProjectPage({ params }: PageProps) {
         <div className="mt-16 grid grid-cols-1 gap-x-10 gap-y-10 border-t-2 border-border pt-10 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <h2 className="label-mono text-primary">{copy.problemLabel}</h2>
-            <p className="mt-3 max-w-[62ch] leading-relaxed text-muted-foreground">
+            <p className="mt-3 max-w-[62ch] leading-relaxed text-muted-foreground whitespace-pre-line">
               {project.problem}
             </p>
           </Reveal>
 
           <Reveal delay={0.06} className="lg:col-span-5">
             <h2 className="label-mono text-primary">{copy.roleLabel}</h2>
-            <p className="mt-3 leading-relaxed text-muted-foreground">
+            <p className="mt-3 leading-relaxed text-muted-foreground whitespace-pre-line">
               {project.role}
             </p>
           </Reveal>
@@ -109,7 +109,7 @@ export default async function ProjectPage({ params }: PageProps) {
                 )}
               </p>
             )}
-            <p className="mt-4 max-w-[62ch] leading-relaxed text-muted-foreground">
+            <p className="mt-4 max-w-[62ch] leading-relaxed text-muted-foreground whitespace-pre-line">
               {project.outcome}
             </p>
           </div>

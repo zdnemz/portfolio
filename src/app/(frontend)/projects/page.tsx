@@ -37,7 +37,7 @@ export default async function ProjectsPage() {
           <h1 className="heading-section mt-3 max-w-[14ch]">
             {copy.archiveHeading}
           </h1>
-          <p className="mt-6 max-w-[58ch] text-lg leading-relaxed text-muted-foreground">
+          <p className="mt-6 max-w-[58ch] text-lg leading-relaxed text-muted-foreground whitespace-pre-line">
             {copy.archiveIntro}
           </p>
           <div className="mt-6 print:hidden">
@@ -54,7 +54,7 @@ export default async function ProjectsPage() {
         <section aria-label={copy.archiveHeading}>
           {projects.length === 0 ? (
             <div className="border-2 border-dashed border-border bg-muted p-10 text-center">
-              <p className="label-mono text-muted-foreground">
+              <p className="label-mono text-muted-foreground whitespace-pre-line">
                 {copy.emptyMessage}
               </p>
             </div>
