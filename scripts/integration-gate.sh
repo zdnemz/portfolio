@@ -87,6 +87,19 @@ curl -s -X POST "$BASE/api/contact-submissions" -H 'Content-Type: application/js
 after=$(count_submissions)
 [ "$after" -gt "$before" ] || { echo "FAIL contact submission not stored ($before -> $after)"; fail=1; }
 
+# Action level: exercise the real submitContact server action the form calls,
+# not just the public REST collection endpoint it writes to. Needs .env.local
+# because tsx does not load it and the local Payload API reads it from env.
+if [ ! -f .env.local ]; then
+  echo "FAIL .env.local missing — required for action-level contact test"
+  exit 1
+fi
+set -a
+# shellcheck disable=SC1091
+. ./.env.local
+set +a
+node --import tsx scripts/test-contact-action.ts
+
 # Leftovers. Tokens are assembled so this script does not match its own grep.
 legacyEnvTok='NOT''ION_'
 CLIENT_TOK='@not''ionhq/client'
