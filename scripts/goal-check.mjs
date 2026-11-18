@@ -48,12 +48,17 @@ const stopServer = () => {
 
 const decode = (html) =>
   html
+    // Next's flight payload escapes a few characters as \u00XX (e.g. & -> \u0026).
+    .replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16)),
+    )
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&#x27;|&apos;/g, "'");
 const squash = (s) => s.replace(/\s+/g, " ").trim();
+const compact = (s) => s.replace(/\s+/g, "");
 const visibleText = (html) =>
   squash(
     decode(
@@ -188,8 +193,9 @@ async function main() {
     authHeader ? { Authorization: authHeader } : { Cookie: cookieHeader };
   const patchSite = async (patch) => {
     const headers = { "Content-Type": "application/json", ...authHeaders() };
+    // Payload 3 registers the global update endpoint as POST, not PATCH.
     let r = await fetch(`${BASE}/api/globals/site`, {
-      method: "PATCH",
+      method: "POST",
       headers,
       body: JSON.stringify(patch),
     });
@@ -204,7 +210,7 @@ async function main() {
       delete merged.createdAt;
       delete merged.updatedAt;
       r = await fetch(`${BASE}/api/globals/site`, {
-        method: "PATCH",
+        method: "POST",
         headers,
         body: JSON.stringify(merged),
       });
@@ -250,7 +256,9 @@ async function main() {
   const metric = project.outcomeMetric;
   if (metric && metric.unit) {
     const combined = squash(`${metric.value}${metric.unit}`);
-    detailText.includes(combined)
+    // The value and unit are separate elements; tag-stripping can insert a
+    // space between them, so compare with whitespace removed on both sides.
+    compact(detailText).includes(compact(combined))
       ? ok("business POV outcome metric", combined)
       : no("business POV outcome metric", `missing ${combined}`);
   } else {
