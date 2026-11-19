@@ -78,7 +78,7 @@ Where to edit what:
 ## Useful scripts
 
 - `npm run dev` — start the development server.
-- `npx next build` — production build (equivalent to `npm run build`).
+- `npx next build` — production build without running migrations (equivalent to the build step only).
 - `npm start` — serve the production build.
 - `npm run lint` — run ESLint.
 - `npx payload seed` — seed/upsert content (idempotent).
@@ -98,6 +98,13 @@ such as AWS S3 or Cloudflare R2: `S3_BUCKET` activates the adapter, with `S3_REG
 `S3_FORCE_PATH_STYLE` and `S3_PUBLIC_URL` for R2/MinIO-style setups. Without these
 variables, media stays on local disk — Vercel's filesystem is read-only, so production
 needs S3 or external URLs for uploads to persist.
+
+Migrations run automatically as part of `npm run build` (`payload migrate && next build`), so
+Vercel applies them on every deploy. The initial schema lives in `src/migrations/`. When you
+change a collection or global, generate and commit a new migration with
+`npx payload migrate:create --name <name>` before pushing. If a database was previously
+schema-pushed in dev mode, the first `payload migrate` against it asks about data loss — answer
+yes once, then future deploys are non-interactive.
 
 ## Why `type: module`
 
