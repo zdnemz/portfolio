@@ -12,7 +12,8 @@ export const Media: CollectionConfig = {
   },
   upload: {
     staticDir: "media",
-    mimeTypes: ["image/*"],
+    mimeTypes: ["image/*", "video/*"],
+    filesRequiredOnCreate: false,
   },
   hooks: {
     afterRead: [

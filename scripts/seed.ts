@@ -17,7 +17,9 @@ export const script = async (config: SanitizedConfig): Promise<void> => {
   await payload.updateGlobal({ slug: "site", data: siteSeed as never });
   payload.logger.info("Site global updated");
 
-  for (const project of projectSeeds) {
+  // Media is attached separately by the import script; keep it out of seed
+  // updates so rerunning the seed never detaches uploaded files.
+  for (const { media: _media, ...project } of projectSeeds) {
     const existing = await payload.find({
       collection: "projects",
       where: { slug: { equals: project.slug } },
